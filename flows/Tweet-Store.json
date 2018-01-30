@@ -1,0 +1,259 @@
+[
+    {
+        "id": "19ba704b.1ecbf8",
+        "type": "tab",
+        "label": "Store Tweets",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e3651e88.4efbb8",
+        "type": "debug",
+        "z": "19ba704b.1ecbf8",
+        "name": "Positive Tweet debug",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 920,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "a81a1889.1ce4f8",
+        "type": "switch",
+        "z": "19ba704b.1ecbf8",
+        "name": "Positive / Negative Tweets",
+        "property": "sentiment.score",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 610,
+        "y": 340,
+        "wires": [
+            [
+                "e3651e88.4efbb8"
+            ],
+            [
+                "8dabd187.675038"
+            ]
+        ]
+    },
+    {
+        "id": "1154d2ec.7f4c7d",
+        "type": "debug",
+        "z": "19ba704b.1ecbf8",
+        "name": "msg.sentiment.score",
+        "active": true,
+        "console": "false",
+        "complete": "sentiment.score",
+        "x": 600,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "25e83dc3.87b9da",
+        "type": "twitter out",
+        "z": "19ba704b.1ecbf8",
+        "twitter": "",
+        "name": "Retweet positive tweets",
+        "x": 920,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "dc46a621.40f928",
+        "type": "twilio out",
+        "z": "19ba704b.1ecbf8",
+        "service": "_ext_",
+        "twilio": "79146d82.4e7754",
+        "from": "",
+        "number": "",
+        "name": "SMS to Phone",
+        "x": 900,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9cfa6e60.1d5bb8",
+        "type": "twitter in",
+        "z": "19ba704b.1ecbf8",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "Listen to twitter feed",
+        "topic": "tweets",
+        "inputs": 1,
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "f1af15f4.c749d8",
+                "e1564743.5f841",
+                "54af0d5.3244cf4"
+            ]
+        ]
+    },
+    {
+        "id": "f1af15f4.c749d8",
+        "type": "debug",
+        "z": "19ba704b.1ecbf8",
+        "name": "msg.tweet details",
+        "active": true,
+        "console": "false",
+        "complete": "tweet",
+        "x": 490,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "83731f8f.7c0d38",
+        "type": "sentiment",
+        "z": "19ba704b.1ecbf8",
+        "name": "Sentiment of Tweets",
+        "x": 350,
+        "y": 340,
+        "wires": [
+            [
+                "1154d2ec.7f4c7d",
+                "a81a1889.1ce4f8",
+                "1d27770d.8428d9"
+            ]
+        ]
+    },
+    {
+        "id": "8dabd187.675038",
+        "type": "debug",
+        "z": "19ba704b.1ecbf8",
+        "name": "Negative Tweets",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 900,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e1564743.5f841",
+        "type": "function",
+        "z": "19ba704b.1ecbf8",
+        "name": "Remove URLS and replace #",
+        "func": "var tweet = msg.tweet.text;\nvar newtweet = tweet.replace(/#/g, \" Hash tag \");\n\n// regex from https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript\nmsg.payload = newtweet.replace( /(([a-z]+:\\/\\/)?(([a-z0-9\\-]+\\.)+([a-z]{2}|biz|com|co|edu|gov|info|net|org|ly))(:[0-9]{1,5})?(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\\s+|$)/gi, \"see short URL \" );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "86f48e75.7cd1a",
+                "83731f8f.7c0d38"
+            ]
+        ]
+    },
+    {
+        "id": "86f48e75.7cd1a",
+        "type": "debug",
+        "z": "19ba704b.1ecbf8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "54af0d5.3244cf4",
+        "type": "debug",
+        "z": "19ba704b.1ecbf8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "tweet.text",
+        "x": 480,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "96cd1532.107cb8",
+        "type": "function",
+        "z": "19ba704b.1ecbf8",
+        "name": "Store Tweet data",
+        "func": "// tweet object includes a timestamp_ms\nmsg.payload = { \"timestamp\" : msg.tweet.timestamp_ms ,\n                \"tweet\"     : msg.tweet.text,\n                \"sentiment\" : msg.sentiment.score};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 560,
+        "y": 520,
+        "wires": [
+            [
+                "efb037e8.59a0d8"
+            ]
+        ]
+    },
+    {
+        "id": "1d27770d.8428d9",
+        "type": "delay",
+        "z": "19ba704b.1ecbf8",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 340,
+        "y": 520,
+        "wires": [
+            [
+                "96cd1532.107cb8"
+            ]
+        ]
+    },
+    {
+        "id": "efb037e8.59a0d8",
+        "type": "cloudant out",
+        "z": "19ba704b.1ecbf8",
+        "name": "",
+        "cloudant": "",
+        "database": "tweetdata",
+        "service": "your-cloudantNoSQLDB",
+        "payonly": true,
+        "operation": "insert",
+        "x": 760,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "dc5b756b.eff0e8",
+        "type": "comment",
+        "z": "19ba704b.1ecbf8",
+        "name": "Pick a #hashtag to follow",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "79146d82.4e7754",
+        "type": "twilio-api",
+        "z": "712f2cc2.9a85ec",
+        "sid": "",
+        "from": "",
+        "name": "My Twilio"
+    }
+]

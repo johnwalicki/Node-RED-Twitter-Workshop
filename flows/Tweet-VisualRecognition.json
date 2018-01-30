@@ -1,0 +1,553 @@
+[
+    {
+        "id": "dabb2875.11c87",
+        "type": "tab",
+        "label": "Twitter Image Analysis",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "b0ff6f0d.a6f698",
+        "type": "ui_template",
+        "z": "dabb2875.11c87",
+        "group": "260dbbfc.17fd0c",
+        "name": "Photo",
+        "order": 4,
+        "width": "9",
+        "height": "9",
+        "format": "<div ng-bind-html></div>\n<img width=\"300\" height=\"300\" alt=\"Twitter Image\" src=\"{{msg.payload}}\"/>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "templateScope": "local",
+        "x": 570,
+        "y": 280,
+        "wires": [
+            [
+                "82b62952.71b8b8"
+            ]
+        ]
+    },
+    {
+        "id": "825b2c5c.5a4008",
+        "type": "comment",
+        "z": "dabb2875.11c87",
+        "name": "Reload picture into Node-RED Dashboard",
+        "info": "<script>\n    window.location.reload(false); \n</script>",
+        "x": 1060,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "bacffbc.c7c1d88",
+        "type": "function",
+        "z": "dabb2875.11c87",
+        "name": "Extract Twitter Image URL",
+        "func": "msg.payload = \"\";\nif (typeof msg.tweet.entities.media !== 'undefined') {\n  if (typeof msg.tweet.entities.media[0].media_url !== 'undefined') {\n    msg.payload = msg.tweet.entities.media[0].media_url;\n  }  \n}\n\nif (typeof msg.tweet.extended_tweet !== 'undefined') {\n    if (typeof msg.tweet.extended_tweet.entities !== 'undefined') {\n        if (typeof msg.tweet.extended_tweet.entities.media !== 'undefined') {\n            if (typeof msg.tweet.extended_tweet.entities.media[0].media_url !== 'undefined') {\n                    msg.payload = msg.tweet.entities.media[0].media_url;\n            }\n        }\n    }\n}\n\nif(typeof msg.tweet.retweeted_status !== 'undefined') {\n    if( typeof msg.tweet.retweeted_status.extended_tweet !== 'undefined') {\n        if( typeof msg.tweet.retweeted_status.extended_tweet.entities !== 'undefined') {\n            if( typeof msg.tweet.retweeted_status.extended_tweet.entities.media[0].media_url !== 'undefined') {\n                msg.payload = msg.tweet.retweeted_status.extended_tweet.entities.media[0].media_url;\n            }\n        }\n    }\n}\n\n\nif( msg.payload.length ) {\n    return [ msg, null ];\n} else {\n    return [ null, msg ];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 370,
+        "y": 260,
+        "wires": [
+            [
+                "dc3110e6.58bec",
+                "ef865e47.ea7278",
+                "b0ff6f0d.a6f698",
+                "a39897e2.0d58c",
+                "18960114.201dbf",
+                "8b197ca1.b1cd38"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "dc3110e6.58bec",
+        "type": "debug",
+        "z": "dabb2875.11c87",
+        "name": "Image URL to analyze",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 620,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "3ebc5511.ba8092",
+        "type": "debug",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "result",
+        "x": 820,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "ef865e47.ea7278",
+        "type": "visual-recognition-v3",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "apikey": "",
+        "image-feature": "classifyImage",
+        "lang": "en",
+        "x": 600,
+        "y": 360,
+        "wires": [
+            [
+                "3ebc5511.ba8092",
+                "45b8573c.8a2a5"
+            ]
+        ]
+    },
+    {
+        "id": "65bcae84.cf8e3",
+        "type": "debug",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "tweet",
+        "x": 580,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "ceeba516.609318",
+        "type": "inject",
+        "z": "dabb2875.11c87",
+        "name": "Rhino",
+        "topic": "",
+        "payload": "{\"created_at\":\"Sat Sep 23 14:19:37 +0000 2017\",\"id\":911595915168899100,\"id_str\":\"911595915168899072\",\"text\":\"RT @IBM: Watch how a new solution is harnessing the power of #IBMIot to combat the poaching of endangered 🦏:… \",\"source\":\"<a href=\\\"http://twitter.com\\\" rel=\\\"nofollow\\\">Twitter Web Client</a>\",\"truncated\":false,\"in_reply_to_status_id\":null,\"in_reply_to_status_id_str\":null,\"in_reply_to_user_id\":null,\"in_reply_to_user_id_str\":null,\"in_reply_to_screen_name\":null,\"user\":{\"id\":2577403879,\"id_str\":\"2577403879\",\"name\":\"John Walicki\",\"screen_name\":\"johnwalicki\",\"location\":\"New Jersey, USA\",\"url\":null,\"description\":\"IBM Watson Internet of Things Developer Advocate, Über Geek, Family Guy. #IoT #OpenSource, #Linux, #AI My tweets are my own.\",\"translator_type\":\"none\",\"protected\":false,\"verified\":false,\"followers_count\":646,\"friends_count\":850,\"listed_count\":153,\"favourites_count\":1770,\"statuses_count\":1473,\"created_at\":\"Thu Jun 19 19:54:32 +0000 2014\",\"utc_offset\":null,\"time_zone\":null,\"geo_enabled\":false,\"lang\":\"en\",\"contributors_enabled\":false,\"is_translator\":false,\"profile_background_color\":\"C0DEED\",\"profile_background_image_url\":\"http://abs.twimg.com/images/themes/theme1/bg.png\",\"profile_background_image_url_https\":\"https://abs.twimg.com/images/themes/theme1/bg.png\",\"profile_background_tile\":false,\"profile_link_color\":\"1DA1F2\",\"profile_sidebar_border_color\":\"C0DEED\",\"profile_sidebar_fill_color\":\"DDEEF6\",\"profile_text_color\":\"333333\",\"profile_use_background_image\":true,\"profile_image_url\":\"http://pbs.twimg.com/profile_images/711615965721718784/7My0kbZI_normal.jpg\",\"profile_image_url_https\":\"https://pbs.twimg.com/profile_images/711615965721718784/7My0kbZI_normal.jpg\",\"profile_banner_url\":\"https://pbs.twimg.com/profile_banners/2577403879/1476478381\",\"default_profile\":true,\"default_profile_image\":false,\"following\":null,\"follow_request_sent\":null,\"notifications\":null},\"geo\":null,\"coordinates\":null,\"place\":null,\"contributors\":null,\"retweeted_status\":{\"created_at\":\"Fri Sep 22 13:15:04 +0000 2017\",\"id\":911217282067714000,\"id_str\":\"911217282067714048\",\"text\":\"Watch how a new solution is harnessing the power of #IBMIot to combat the poaching of endangered 🦏:… https://t.co/91BD2uZqFk\",\"display_text_range\":[0,140],\"source\":\"<a href=\\\"https://www.sprinklr.com\\\" rel=\\\"nofollow\\\">Sprinklr</a>\",\"truncated\":true,\"in_reply_to_status_id\":null,\"in_reply_to_status_id_str\":null,\"in_reply_to_user_id\":null,\"in_reply_to_user_id_str\":null,\"in_reply_to_screen_name\":null,\"user\":{\"id\":18994444,\"id_str\":\"18994444\",\"name\":\"IBM\",\"screen_name\":\"IBM\",\"location\":\"Armonk, New York\",\"url\":\"http://www.ibm.com\",\"description\":\"Official IBM Twitter account. Follows the IBM Social Computing Guidelines.\",\"translator_type\":\"none\",\"protected\":false,\"verified\":true,\"followers_count\":396044,\"friends_count\":6427,\"listed_count\":5154,\"favourites_count\":2637,\"statuses_count\":9814,\"created_at\":\"Wed Jan 14 20:41:57 +0000 2009\",\"utc_offset\":-14400,\"time_zone\":\"Eastern Time (US & Canada)\",\"geo_enabled\":false,\"lang\":\"en\",\"contributors_enabled\":false,\"is_translator\":false,\"profile_background_color\":\"FFFFFF\",\"profile_background_image_url\":\"http://pbs.twimg.com/profile_background_images/378800000152426467/Viwc1IvP.jpeg\",\"profile_background_image_url_https\":\"https://pbs.twimg.com/profile_background_images/378800000152426467/Viwc1IvP.jpeg\",\"profile_background_tile\":false,\"profile_link_color\":\"2FC2EF\",\"profile_sidebar_border_color\":\"000000\",\"profile_sidebar_fill_color\":\"252429\",\"profile_text_color\":\"666666\",\"profile_use_background_image\":false,\"profile_image_url\":\"http://pbs.twimg.com/profile_images/875111316821651456/AmZkYTWP_normal.jpg\",\"profile_image_url_https\":\"https://pbs.twimg.com/profile_images/875111316821651456/AmZkYTWP_normal.jpg\",\"profile_banner_url\":\"https://pbs.twimg.com/profile_banners/18994444/1495457811\",\"default_profile\":false,\"default_profile_image\":false,\"following\":null,\"follow_request_sent\":null,\"notifications\":null},\"geo\":null,\"coordinates\":null,\"place\":null,\"contributors\":null,\"is_quote_status\":false,\"extended_tweet\":{\"full_text\":\"Watch how a new solution is harnessing the power of #IBMIot to combat the poaching of endangered 🦏: https://t.co/zL55BXKLFq #WorldRhinoDay https://t.co/eBpZmbbnB7\",\"display_text_range\":[0,138],\"entities\":{\"hashtags\":[{\"text\":\"IBMIot\",\"indices\":[52,59]},{\"text\":\"WorldRhinoDay\",\"indices\":[124,138]}],\"urls\":[{\"url\":\"https://t.co/zL55BXKLFq\",\"expanded_url\":\"http://bitly.com/2hknTRt\",\"display_url\":\"bitly.com/2hknTRt\",\"indices\":[100,123]}],\"user_mentions\":[],\"symbols\":[],\"media\":[{\"id\":911217279353880600,\"id_str\":\"911217279353880576\",\"indices\":[139,162],\"media_url\":\"http://pbs.twimg.com/media/DKVLSakWAAAc3Fl.jpg\",\"media_url_https\":\"https://pbs.twimg.com/media/DKVLSakWAAAc3Fl.jpg\",\"url\":\"https://t.co/eBpZmbbnB7\",\"display_url\":\"pic.twitter.com/eBpZmbbnB7\",\"expanded_url\":\"https://twitter.com/IBM/status/911217282067714048/photo/1\",\"type\":\"photo\",\"sizes\":{\"small\":{\"w\":680,\"h\":453,\"resize\":\"fit\"},\"medium\":{\"w\":1024,\"h\":682,\"resize\":\"fit\"},\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"large\":{\"w\":1024,\"h\":682,\"resize\":\"fit\"}}}]},\"extended_entities\":{\"media\":[{\"id\":911217279353880600,\"id_str\":\"911217279353880576\",\"indices\":[139,162],\"media_url\":\"http://pbs.twimg.com/media/DKVLSakWAAAc3Fl.jpg\",\"media_url_https\":\"https://pbs.twimg.com/media/DKVLSakWAAAc3Fl.jpg\",\"url\":\"https://t.co/eBpZmbbnB7\",\"display_url\":\"pic.twitter.com/eBpZmbbnB7\",\"expanded_url\":\"https://twitter.com/IBM/status/911217282067714048/photo/1\",\"type\":\"photo\",\"sizes\":{\"small\":{\"w\":680,\"h\":453,\"resize\":\"fit\"},\"medium\":{\"w\":1024,\"h\":682,\"resize\":\"fit\"},\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"large\":{\"w\":1024,\"h\":682,\"resize\":\"fit\"}}}]}},\"quote_count\":2,\"reply_count\":0,\"retweet_count\":35,\"favorite_count\":46,\"entities\":{\"hashtags\":[{\"text\":\"IBMIot\",\"indices\":[52,59]}],\"urls\":[{\"url\":\"https://t.co/91BD2uZqFk\",\"expanded_url\":\"https://twitter.com/i/web/status/911217282067714048\",\"display_url\":\"twitter.com/i/web/status/9…\",\"indices\":[101,124]}],\"user_mentions\":[],\"symbols\":[]},\"favorited\":false,\"retweeted\":false,\"possibly_sensitive\":false,\"filter_level\":\"low\",\"lang\":\"en\"},\"is_quote_status\":false,\"quote_count\":0,\"reply_count\":0,\"retweet_count\":0,\"favorite_count\":0,\"entities\":{\"hashtags\":[{\"text\":\"IBMIot\",\"indices\":[61,68]}],\"urls\":[],\"user_mentions\":[{\"screen_name\":\"IBM\",\"name\":\"IBM\",\"id\":18994444,\"id_str\":\"18994444\",\"indices\":[3,7]}],\"symbols\":[]},\"favorited\":false,\"retweeted\":false,\"possibly_sensitive\":false,\"filter_level\":\"low\",\"lang\":\"en\",\"timestamp_ms\":\"1506176377466\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 110,
+        "y": 460,
+        "wires": [
+            [
+                "6684c3fc.bcf81c"
+            ]
+        ]
+    },
+    {
+        "id": "6684c3fc.bcf81c",
+        "type": "change",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tweet",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 440,
+        "wires": [
+            [
+                "bacffbc.c7c1d88",
+                "38f1ba97.cc60ce"
+            ]
+        ]
+    },
+    {
+        "id": "a9ce9d93.85f16",
+        "type": "comment",
+        "z": "dabb2875.11c87",
+        "name": "Sample Tweets with images",
+        "info": "",
+        "x": 150,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "45b8573c.8a2a5",
+        "type": "function",
+        "z": "dabb2875.11c87",
+        "name": "Process Results",
+        "func": "if (typeof msg.result == 'undefined') {\n    return null;\n}\n\n// Text Extraction\nif (typeof msg.result.images[0].text != 'undefined') {\n    var image_text = msg.result.images[0].text;\n    msg.payload = image_text;\n    msg.template = image_text;\n    if( image_text.length >0 ) {\n       msg.template= \"Watson found the words: \"+image_text;\n    }\n    return msg;\n}\n\nvar bestcolor = -1;\nvar colorscore = 0;\nvar c_id = 0;\nvar say = \"\";\nvar item;\n\nfor ( c_id=0; c_id < (msg.result.images[0].classifiers.length); c_id++ ){\n    // find the best color, if any\n    for( i =0; i<(msg.result.images[0].classifiers[c_id].classes.length); i++ ){\n      var object = msg.result.images[0].classifiers[c_id].classes[i].class;\n      if ( object.includes(\"color\") ) {\n        if( msg.result.images[0].classifiers[c_id].classes[i].score > colorscore){\n            bestcolor = i;\n            colorscore = msg.result.images[0].classifiers[c_id].classes[i].score;\n        }\n      }\n    }\n \n    var bestItem = 0;\n    var itemScore = 0;\n    for( i =0; i<(msg.result.images[0].classifiers[c_id].classes.length); i++ ){\n      var object = msg.result.images[0].classifiers[c_id].classes[i].class;\n      if ( !object.includes(\"color\") ) {\n        if( msg.result.images[0].classifiers[c_id].classes[i].score > itemScore){\n//            bestItem = i;\n            bestItem = 0;\n            itemScore =  msg.result.images[0].classifiers[c_id].classes[i].score;\n        }\n      }\n    }\n \n     if( bestcolor != \"-1\") {\n        // found a color\n        item = msg.result.images[0].classifiers[c_id].classes[bestcolor].class + \" \" + msg.result.images[0].classifiers[c_id].classes[bestItem].class;\n        bestcolor = -1;\n    } else {\n       item = msg.result.images[0].classifiers[c_id].classes[bestItem].class;\n    }\n//    say = say + \" Watson's \" + msg.result.images[0].classifiers[c_id].name + \" classifier thinks this picture contains a \" + item +\".\";\n    say = say + \" Watson thinks this picture contains a \" + item +\".\";\n}\nmsg.payload =  say;\n\nvar picInfo = msg.result.images[0].classifiers[0].classes;\nvar arrayLength = picInfo.length;\n\nmsg.template=\"<style>h4 { text-align: center; margin: 10px; }\";\nmsg.template=msg.template+\"table {    width: 440px;    margin-top: 10px; }\";\nmsg.template=msg.template+\"th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #FFFFFF; width: 50%;}\";\nmsg.template=msg.template+\".classifier {background-color: rgb(85,150,230);text-align: center;}\";\nmsg.template=msg.template+\".title { background-color:LightGrey;}</style>\";\n\nmsg.template=msg.template+\"<h2>\"+say+\"</h2><table span=100%><tr><th>Class</th><th>Confidence</th></tr>\";\nfor (var i = 0; i < arrayLength; i++) {\n  msg.template = msg.template + \"<tr><td>\" + picInfo[i].class + \"</td><td>\" + picInfo[i].score + \"</td></tr>\";\n}\nmsg.template = msg.template + \"</table>\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 840,
+        "y": 360,
+        "wires": [
+            [
+                "49fa7a83.a606a4",
+                "8a37d282.08e648"
+            ]
+        ]
+    },
+    {
+        "id": "49fa7a83.a606a4",
+        "type": "debug",
+        "z": "dabb2875.11c87",
+        "name": "What did Watson find?",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1080,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "a39897e2.0d58c",
+        "type": "change",
+        "z": "dabb2875.11c87",
+        "name": "Tweet Text",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tweet.text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 200,
+        "wires": [
+            [
+                "586b71b1.b998e",
+                "f4fb44ad.02f17"
+            ]
+        ]
+    },
+    {
+        "id": "586b71b1.b998e",
+        "type": "ui_text",
+        "z": "dabb2875.11c87",
+        "group": "260dbbfc.17fd0c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Tweet Text",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 820,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8a37d282.08e648",
+        "type": "ui_template",
+        "z": "dabb2875.11c87",
+        "group": "d81dd0b.2cbdab",
+        "name": "Results Table",
+        "order": 1,
+        "width": "9",
+        "height": "10",
+        "format": "<div ng-bind-html=\"msg.template\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 1050,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "932ba2a9.8251c",
+        "type": "inject",
+        "z": "dabb2875.11c87",
+        "name": "Curtain",
+        "topic": "",
+        "payload": "{\"created_at\":\"Sat Sep 23 17:48:40 +0000 2017\",\"id\":911648524663709700,\"id_str\":\"911648524663709698\",\"text\":\"Breaking 2 @NikeRunning @NatGeo https://t.co/aAygp48EAq\",\"display_text_range\":[0,31],\"source\":\"<a href=\\\"http://twitter.com/download/iphone\\\" rel=\\\"nofollow\\\">Twitter for iPhone</a>\",\"truncated\":false,\"in_reply_to_status_id\":null,\"in_reply_to_status_id_str\":null,\"in_reply_to_user_id\":null,\"in_reply_to_user_id_str\":null,\"in_reply_to_screen_name\":null,\"user\":{\"id\":109308126,\"id_str\":\"109308126\",\"name\":\"Jrmi\",\"screen_name\":\"JeremieRoturier\",\"location\":\"London, England\",\"url\":\"http://jeremieroturier.com\",\"description\":\"Sportsaholic and writing junkie. Member of @JolieFoulee, founder of @EtoileFO. Take pics for quality football magazines. Work at @Apple x @beatsbydre. Ex @Nike.\",\"translator_type\":\"none\",\"protected\":false,\"verified\":false,\"followers_count\":472,\"friends_count\":665,\"listed_count\":24,\"favourites_count\":631,\"statuses_count\":4333,\"created_at\":\"Thu Jan 28 16:42:30 +0000 2010\",\"utc_offset\":7200,\"time_zone\":\"Paris\",\"geo_enabled\":true,\"lang\":\"en\",\"contributors_enabled\":false,\"is_translator\":false,\"profile_background_color\":\"8C12FF\",\"profile_background_image_url\":\"http://pbs.twimg.com/profile_background_images/106316656/chat_noir.jpg\",\"profile_background_image_url_https\":\"https://pbs.twimg.com/profile_background_images/106316656/chat_noir.jpg\",\"profile_background_tile\":true,\"profile_link_color\":\"85459E\",\"profile_sidebar_border_color\":\"8956B3\",\"profile_sidebar_fill_color\":\"030303\",\"profile_text_color\":\"17BEE8\",\"profile_use_background_image\":true,\"profile_image_url\":\"http://pbs.twimg.com/profile_images/730899031162036224/_8p6sEXu_normal.jpg\",\"profile_image_url_https\":\"https://pbs.twimg.com/profile_images/730899031162036224/_8p6sEXu_normal.jpg\",\"profile_banner_url\":\"https://pbs.twimg.com/profile_banners/109308126/1472307658\",\"default_profile\":false,\"default_profile_image\":false,\"following\":null,\"follow_request_sent\":null,\"notifications\":null},\"geo\":null,\"coordinates\":null,\"place\":{\"id\":\"3078869807f9dd36\",\"url\":\"https://api.twitter.com/1.1/geo/id/3078869807f9dd36.json\",\"place_type\":\"city\",\"name\":\"Berlin\",\"full_name\":\"Berlin, Germany\",\"country_code\":\"DE\",\"country\":\"Germany\",\"bounding_box\":{\"type\":\"Polygon\",\"coordinates\":[[[13.088304,52.338079],[13.088304,52.675323],[13.760909,52.675323],[13.760909,52.338079]]]},\"attributes\":{}},\"contributors\":null,\"is_quote_status\":false,\"quote_count\":0,\"reply_count\":0,\"retweet_count\":0,\"favorite_count\":0,\"entities\":{\"hashtags\":[],\"urls\":[],\"user_mentions\":[{\"screen_name\":\"NikeRunning\",\"name\":\"Nike+ Run Club\",\"id\":337726224,\"id_str\":\"337726224\",\"indices\":[11,23]},{\"screen_name\":\"NatGeo\",\"name\":\"National Geographic\",\"id\":17471979,\"id_str\":\"17471979\",\"indices\":[24,31]}],\"symbols\":[],\"media\":[{\"id\":911648512970051600,\"id_str\":\"911648512970051585\",\"indices\":[32,55],\"media_url\":\"http://pbs.twimg.com/media/DKbTfg-X0AEAI9P.jpg\",\"media_url_https\":\"https://pbs.twimg.com/media/DKbTfg-X0AEAI9P.jpg\",\"url\":\"https://t.co/aAygp48EAq\",\"display_url\":\"pic.twitter.com/aAygp48EAq\",\"expanded_url\":\"https://twitter.com/JeremieRoturier/status/911648524663709698/photo/1\",\"type\":\"photo\",\"sizes\":{\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"large\":{\"w\":1776,\"h\":1184,\"resize\":\"fit\"},\"medium\":{\"w\":1200,\"h\":800,\"resize\":\"fit\"},\"small\":{\"w\":680,\"h\":453,\"resize\":\"fit\"}}}]},\"extended_entities\":{\"media\":[{\"id\":911648512970051600,\"id_str\":\"911648512970051585\",\"indices\":[32,55],\"media_url\":\"http://pbs.twimg.com/media/DKbTfg-X0AEAI9P.jpg\",\"media_url_https\":\"https://pbs.twimg.com/media/DKbTfg-X0AEAI9P.jpg\",\"url\":\"https://t.co/aAygp48EAq\",\"display_url\":\"pic.twitter.com/aAygp48EAq\",\"expanded_url\":\"https://twitter.com/JeremieRoturier/status/911648524663709698/photo/1\",\"type\":\"photo\",\"sizes\":{\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"large\":{\"w\":1776,\"h\":1184,\"resize\":\"fit\"},\"medium\":{\"w\":1200,\"h\":800,\"resize\":\"fit\"},\"small\":{\"w\":680,\"h\":453,\"resize\":\"fit\"}}}]},\"favorited\":false,\"retweeted\":false,\"possibly_sensitive\":false,\"filter_level\":\"low\",\"lang\":\"en\",\"timestamp_ms\":\"1506188920547\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 110,
+        "y": 420,
+        "wires": [
+            [
+                "6684c3fc.bcf81c"
+            ]
+        ]
+    },
+    {
+        "id": "dbcc6968.556598",
+        "type": "comment",
+        "z": "dabb2875.11c87",
+        "name": "Paste API keys for Visual Recognition",
+        "info": "1. Log into IBM Cloud\n2. Create an instance of the \nWatson Visual Recognition service.\n3. Visit the Service Credentials tab\n4. Click on View Credentials\n5. Copy/Paste the password and username into\nthis Node-RED node.",
+        "x": 580,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "38f1ba97.cc60ce",
+        "type": "debug",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 590,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "29d8289b.3497c",
+        "type": "delay",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 300,
+        "y": 80,
+        "wires": [
+            [
+                "bacffbc.c7c1d88",
+                "65bcae84.cf8e3"
+            ]
+        ]
+    },
+    {
+        "id": "f4fb44ad.02f17",
+        "type": "sentiment",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "x": 820,
+        "y": 160,
+        "wires": [
+            [
+                "eb3654d6.18f8a8"
+            ]
+        ]
+    },
+    {
+        "id": "d732e6.a571ad18",
+        "type": "ui_gauge",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "group": "157fed9d.8beeda",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Sentiment Score",
+        "label": "",
+        "format": "{{value}}",
+        "min": "-10",
+        "max": 10,
+        "colors": [
+            "#ff0000",
+            "#e6e600",
+            "#008040"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 1200,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "eb3654d6.18f8a8",
+        "type": "change",
+        "z": "dabb2875.11c87",
+        "name": "Sentiment Score",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "sentiment.score",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1000,
+        "y": 160,
+        "wires": [
+            [
+                "d732e6.a571ad18"
+            ]
+        ]
+    },
+    {
+        "id": "18960114.201dbf",
+        "type": "change",
+        "z": "dabb2875.11c87",
+        "name": "Twitter Handle",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tweet.user.screen_name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 320,
+        "wires": [
+            [
+                "abed7b75.953448"
+            ]
+        ]
+    },
+    {
+        "id": "abed7b75.953448",
+        "type": "ui_text",
+        "z": "dabb2875.11c87",
+        "group": "260dbbfc.17fd0c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "User: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 810,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "82b62952.71b8b8",
+        "type": "ui_ui_control",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "x": 820,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "27f448dd.912c38",
+        "type": "twitter in",
+        "z": "dabb2875.11c87",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "",
+        "topic": "tweets",
+        "inputs": 1,
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "29d8289b.3497c"
+            ]
+        ]
+    },
+    {
+        "id": "8b197ca1.b1cd38",
+        "type": "function",
+        "z": "dabb2875.11c87",
+        "name": "Tweet URL",
+        "func": "msg.payload = \"<a href=\\\"https://twitter.com/\"+msg.tweet.user.screen_name+\"/status/\"+msg.tweet.id_str+\"\\\">Open Tweet</a>\";\nif( typeof msg.payload.retweeted_status != 'undefined') {\n    msg.payload = \"<a href=\\\"https://twitter.com/\"+msg.tweet.retweeted_status.user.screen_name+\"/status/\"+msg.tweet.retweeted_status.id_str+\"\\\">Open Tweet</a>\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "1fbdfb8d.ebd4dc",
+                "84414d78.61d3d"
+            ]
+        ]
+    },
+    {
+        "id": "1fbdfb8d.ebd4dc",
+        "type": "ui_template",
+        "z": "dabb2875.11c87",
+        "group": "260dbbfc.17fd0c",
+        "name": "Open Tweet",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 830,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "84414d78.61d3d",
+        "type": "debug",
+        "z": "dabb2875.11c87",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 830,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "260dbbfc.17fd0c",
+        "type": "ui_group",
+        "z": "dabb2875.11c87",
+        "name": "Tweet",
+        "tab": "57b22b6d.aaa24c",
+        "order": 1,
+        "disp": true,
+        "width": "9"
+    },
+    {
+        "id": "d81dd0b.2cbdab",
+        "type": "ui_group",
+        "z": "",
+        "name": "Results",
+        "tab": "57b22b6d.aaa24c",
+        "order": 2,
+        "disp": true,
+        "width": "9"
+    },
+    {
+        "id": "157fed9d.8beeda",
+        "type": "ui_group",
+        "z": "",
+        "name": "Sentiment",
+        "tab": "57b22b6d.aaa24c",
+        "order": 3,
+        "disp": false,
+        "width": "8"
+    },
+    {
+        "id": "57b22b6d.aaa24c",
+        "type": "ui_tab",
+        "z": "dabb2875.11c87",
+        "name": "Twitter Image Analysis",
+        "icon": "dashboard",
+        "order": 2
+    }
+]

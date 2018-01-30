@@ -1,0 +1,377 @@
+[
+    {
+        "id": "aa9b7a75.52a7d8",
+        "type": "tab",
+        "label": "Tweet Speaker",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "2466d365.23821c",
+        "type": "debug",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Positive Tweet debug",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 920,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "8613bdd3.0151e8",
+        "type": "switch",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Positive / Negative Tweets",
+        "property": "sentiment.score",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 610,
+        "y": 340,
+        "wires": [
+            [
+                "2466d365.23821c"
+            ],
+            [
+                "390ec360.35f6c4"
+            ]
+        ]
+    },
+    {
+        "id": "9f72401e.fba538",
+        "type": "debug",
+        "z": "aa9b7a75.52a7d8",
+        "name": "msg.sentiment.score",
+        "active": true,
+        "console": "false",
+        "complete": "sentiment.score",
+        "x": 600,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ef331f60.674a",
+        "type": "twitter out",
+        "z": "aa9b7a75.52a7d8",
+        "twitter": "",
+        "name": "Retweet positive tweets",
+        "x": 920,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "452b85b.b1d367c",
+        "type": "twitter in",
+        "z": "aa9b7a75.52a7d8",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "Listen to twitter feed",
+        "topic": "tweets",
+        "inputs": 1,
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "5f2d24b1.c624ac",
+                "c51dc962.920cc",
+                "6a3ee9d5.250498"
+            ]
+        ]
+    },
+    {
+        "id": "5f2d24b1.c624ac",
+        "type": "debug",
+        "z": "aa9b7a75.52a7d8",
+        "name": "msg.tweet details",
+        "active": false,
+        "console": "false",
+        "complete": "tweet",
+        "x": 490,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "31619966.de6186",
+        "type": "sentiment",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Sentiment of Tweets",
+        "x": 350,
+        "y": 340,
+        "wires": [
+            [
+                "9f72401e.fba538",
+                "8613bdd3.0151e8",
+                "df897d95.373c28"
+            ]
+        ]
+    },
+    {
+        "id": "390ec360.35f6c4",
+        "type": "debug",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Negative Tweets",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 900,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c51dc962.920cc",
+        "type": "function",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Remove URLS and replace #",
+        "func": "var tweet = msg.tweet.text;\nvar newtweet = tweet.replace(/#/g, \" Hash tag \");\n\n// regex from https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript\nmsg.payload = newtweet.replace( /(([a-z]+:\\/\\/)?(([a-z0-9\\-]+\\.)+([a-z]{2}|biz|com|co|edu|gov|info|net|org|ly))(:[0-9]{1,5})?(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\\s+|$)/gi, \"see short URL \" );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "5dc2bed3.fa8a3",
+                "31619966.de6186"
+            ]
+        ]
+    },
+    {
+        "id": "5dc2bed3.fa8a3",
+        "type": "debug",
+        "z": "aa9b7a75.52a7d8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "6a3ee9d5.250498",
+        "type": "debug",
+        "z": "aa9b7a75.52a7d8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "tweet.text",
+        "x": 480,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "1e895bf.08daa24",
+        "type": "watson-text-to-speech",
+        "z": "aa9b7a75.52a7d8",
+        "name": "",
+        "lang": "en-US",
+        "langhidden": "en-US",
+        "langcustom": "NoCustomisationSetting",
+        "langcustomhidden": "",
+        "voice": "en-US_MichaelVoice",
+        "voicehidden": "en-US_MichaelVoice",
+        "format": "audio/wav",
+        "password": "",
+        "payload-response": true,
+        "default-endpoint": true,
+        "service-endpoint": "",
+        "x": 550,
+        "y": 520,
+        "wires": [
+            [
+                "8e54d7fb.025948"
+            ]
+        ]
+    },
+    {
+        "id": "66f4e79d.91c9b",
+        "type": "comment",
+        "z": "aa9b7a75.52a7d8",
+        "name": "node-red-node-watson dependency",
+        "info": "This flow requires the\n  node-red-node-watson@0.5.10 or higher\nfor the following Watson nodes:\n  Text to Speech\n  Speech to Text\n  Tone Analyzer\n  Visual Recognition\n\nYou can either \n  $ sudo npm -g install node-red-node-watson\n  and restart the Node-RED service\nor install it from Node-RED Manage Palette.",
+        "x": 510,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "443db3e7.713694",
+        "type": "comment",
+        "z": "aa9b7a75.52a7d8",
+        "name": "node-red-contrib-play-audio dependency",
+        "info": "This flow requires the\n  node-red-contrib-play-audio\nfor the Browser play audio node.\nYou can either \n  $ sudo npm -g install node-red-contrib-play-audio\n  and restart the Node-RED service\nor install it from Node-RED Manage Palette.",
+        "x": 820,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "8e54d7fb.025948",
+        "type": "play audio",
+        "z": "aa9b7a75.52a7d8",
+        "name": "",
+        "voice": "",
+        "x": 730,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "df897d95.373c28",
+        "type": "delay",
+        "z": "aa9b7a75.52a7d8",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 340,
+        "y": 520,
+        "wires": [
+            [
+                "1e895bf.08daa24"
+            ]
+        ]
+    },
+    {
+        "id": "5e3e291a.0715b8",
+        "type": "comment",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Paste API keys for Watson Text to Speech",
+        "info": "1. Log into IBM Cloud\n2. Create an instance of the \nWatson Text to Speech service.\n3. Visit the Service Credentials tab\n4. Click on View Credentials\n5. Copy/Paste the password and username into\nthis Node-RED node.\n\nOr\n1. Open this Cloud Foundry Node-RED Starter App\n2. Create a new Connection\n3. Bind the Watson Text to Speech service\n4. Restage your Cloud Foundry application",
+        "x": 560,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "48ebedb2.4c8644",
+        "type": "twilio out",
+        "z": "aa9b7a75.52a7d8",
+        "service": "_ext_",
+        "twilio": "4d760601.32ea58",
+        "from": "",
+        "number": "",
+        "name": "SMS to Phone",
+        "x": 900,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "5fbf9ac1.6aded4",
+        "type": "inject",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Happy test",
+        "topic": "",
+        "payload": "{\"text\":\"every one is awesome\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 100,
+        "y": 200,
+        "wires": [
+            [
+                "d6a8db.b0ea8728"
+            ]
+        ]
+    },
+    {
+        "id": "d6a8db.b0ea8728",
+        "type": "change",
+        "z": "aa9b7a75.52a7d8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tweet",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 240,
+        "wires": [
+            [
+                "c51dc962.920cc"
+            ]
+        ]
+    },
+    {
+        "id": "3f4bce94.9100fa",
+        "type": "inject",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Sadness test",
+        "topic": "",
+        "payload": "{\"text\":\"This is miserable and sad\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 110,
+        "y": 240,
+        "wires": [
+            [
+                "d6a8db.b0ea8728"
+            ]
+        ]
+    },
+    {
+        "id": "52374841.fbf998",
+        "type": "inject",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Angry test",
+        "topic": "",
+        "payload": "{\"text\":\"I hate this demo\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 100,
+        "y": 280,
+        "wires": [
+            [
+                "d6a8db.b0ea8728"
+            ]
+        ]
+    },
+    {
+        "id": "99f9634f.b98c28",
+        "type": "comment",
+        "z": "aa9b7a75.52a7d8",
+        "name": "Pick a #hashtag to follow",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "4d760601.32ea58",
+        "type": "twilio-api",
+        "z": "aa9b7a75.52a7d8",
+        "sid": "",
+        "from": "",
+        "name": "My Twilio"
+    }
+]

@@ -1,0 +1,518 @@
+[
+    {
+        "id": "43ca71ea.a470d8",
+        "type": "tab",
+        "label": "Tweet Tone",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "7b7fc5b0.b9c2bc",
+        "type": "twitter in",
+        "z": "43ca71ea.a470d8",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "Listen to twitter feed",
+        "topic": "tweets",
+        "inputs": 1,
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "418813ce.acbeb4",
+                "dee152a6.dc683",
+                "68a92015.90d8f8"
+            ]
+        ]
+    },
+    {
+        "id": "418813ce.acbeb4",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "msg.tweet details",
+        "active": true,
+        "console": "false",
+        "complete": "tweet",
+        "x": 490,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "dee152a6.dc683",
+        "type": "function",
+        "z": "43ca71ea.a470d8",
+        "name": "Remove URLS and replace #",
+        "func": "var tweet = msg.tweet.text;\nvar newtweet = tweet.replace(/#/g, \" Hash tag \");\n\n// regex from https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript\nmsg.payload = newtweet.replace( /(([a-z]+:\\/\\/)?(([a-z0-9\\-]+\\.)+([a-z]{2}|biz|com|co|edu|gov|info|net|org|ly))(:[0-9]{1,5})?(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\\s+|$)/gi, \"see short URL \" );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "793be455.d24504",
+                "7cf85b86.c47c64"
+            ]
+        ]
+    },
+    {
+        "id": "793be455.d24504",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "68a92015.90d8f8",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "tweet.text",
+        "x": 480,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "e2a1a472.45d31",
+        "type": "inject",
+        "z": "43ca71ea.a470d8",
+        "name": "Happy test",
+        "topic": "",
+        "payload": "{\"text\":\"every one is awesome\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 100,
+        "y": 200,
+        "wires": [
+            [
+                "cea2101d.c90368"
+            ]
+        ]
+    },
+    {
+        "id": "cea2101d.c90368",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tweet",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 240,
+        "wires": [
+            [
+                "dee152a6.dc683"
+            ]
+        ]
+    },
+    {
+        "id": "2ff1eec5.d73532",
+        "type": "inject",
+        "z": "43ca71ea.a470d8",
+        "name": "Sadness test",
+        "topic": "",
+        "payload": "{\"text\":\"This is miserable and sad\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 110,
+        "y": 240,
+        "wires": [
+            [
+                "cea2101d.c90368"
+            ]
+        ]
+    },
+    {
+        "id": "b0ad7ae8.55827",
+        "type": "inject",
+        "z": "43ca71ea.a470d8",
+        "name": "Angry test",
+        "topic": "",
+        "payload": "{\"text\":\"I hate this demo\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 100,
+        "y": 280,
+        "wires": [
+            [
+                "cea2101d.c90368"
+            ]
+        ]
+    },
+    {
+        "id": "493d81b2.d9b97",
+        "type": "comment",
+        "z": "43ca71ea.a470d8",
+        "name": "Paste API keys for Watson Tone Analyzer",
+        "info": "1. Log into IBM Cloud\n2. Create an instance of the \nWatson Tone Analyzer service.\n3. Visit the Service Credentials tab\n4. Click on View Credentials\n5. Copy/Paste the password and username into\nthis Node-RED node.\n\nOr\n1. Open this Cloud Foundry Node-RED Starter App\n2. Create a new Connection\n3. Bind the Watson Tone Analyzer service\n4. Restage your Cloud Foundry application",
+        "x": 250,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "5851e163.c38cc8",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "Tone categories",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 780,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "42622f82.50e3a8",
+        "type": "function",
+        "z": "43ca71ea.a470d8",
+        "name": "High Score",
+        "func": "var emotions = [];\nemotions = msg.response.document_tone.tone_categories\n                .filter(function(c){\n                    if (c.category_id == \"emotion_tone\")\n                    {return c; }\n                    })[0].tones;\n                    \nvar myscore =  0;\nfor (var i=0; i<emotions.length; i++) {\n    if(emotions[i].score > myscore) {\n        msg.payload = emotions[i].score;\n        msg.topic = emotions[i].tone_name;\n        myscore = emotions[i].score;\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 550,
+        "y": 380,
+        "wires": [
+            [
+                "34259807.c30f8",
+                "468043bc.a5b3e4"
+            ]
+        ]
+    },
+    {
+        "id": "34259807.c30f8",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "Score",
+        "active": true,
+        "console": "false",
+        "complete": "topic",
+        "x": 750,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b539688a.ba656",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "Print msg.response",
+        "active": true,
+        "console": "false",
+        "complete": "response",
+        "x": 570,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7cf85b86.c47c64",
+        "type": "watson-tone-analyzer-v3",
+        "z": "43ca71ea.a470d8",
+        "name": "Analyze Tone",
+        "tones": "emotion",
+        "sentences": "true",
+        "contentType": "false",
+        "default-endpoint": true,
+        "service-endpoint": "",
+        "x": 340,
+        "y": 340,
+        "wires": [
+            [
+                "42622f82.50e3a8",
+                "b539688a.ba656",
+                "832de69d.b20978"
+            ]
+        ]
+    },
+    {
+        "id": "832de69d.b20978",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "tone_categories",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "response.document_tone.tone_categories",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 340,
+        "wires": [
+            [
+                "5851e163.c38cc8"
+            ]
+        ]
+    },
+    {
+        "id": "468043bc.a5b3e4",
+        "type": "switch",
+        "z": "43ca71ea.a470d8",
+        "name": "Select Emotion",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Joy",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Fear",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Sadness",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Anger",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Disgust",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 5,
+        "x": 340,
+        "y": 600,
+        "wires": [
+            [
+                "c84637e8.b58548"
+            ],
+            [
+                "ec8464ba.1e324"
+            ],
+            [
+                "c5024887.c501e"
+            ],
+            [
+                "51689ea5.46233"
+            ],
+            [
+                "3e21d7fb.225a58"
+            ]
+        ]
+    },
+    {
+        "id": "113bc8ea.6ba9bf",
+        "type": "comment",
+        "z": "43ca71ea.a470d8",
+        "name": "Extract highest emotion",
+        "info": "",
+        "x": 760,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "ec8464ba.1e324",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "Fear",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0,255,0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 560,
+        "wires": [
+            [
+                "c3ee9103.c0c6"
+            ]
+        ]
+    },
+    {
+        "id": "51689ea5.46233",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "Anger",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "255,0,0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 640,
+        "wires": [
+            [
+                "c3ee9103.c0c6"
+            ]
+        ]
+    },
+    {
+        "id": "c5024887.c501e",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "Sadness",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0,0,255",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 600,
+        "wires": [
+            [
+                "c3ee9103.c0c6"
+            ]
+        ]
+    },
+    {
+        "id": "c84637e8.b58548",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "Joy",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "255,255,0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 520,
+        "wires": [
+            [
+                "c3ee9103.c0c6"
+            ]
+        ]
+    },
+    {
+        "id": "3e21d7fb.225a58",
+        "type": "change",
+        "z": "43ca71ea.a470d8",
+        "name": "Disgust",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "221,160,221",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 680,
+        "wires": [
+            [
+                "c3ee9103.c0c6"
+            ]
+        ]
+    },
+    {
+        "id": "c3ee9103.c0c6",
+        "type": "template",
+        "z": "43ca71ea.a470d8",
+        "name": "Score tweet",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "This tweet expresses {{topic}} - {{tweet.text}}",
+        "output": "str",
+        "x": 750,
+        "y": 600,
+        "wires": [
+            [
+                "8c782698.eda4a"
+            ]
+        ]
+    },
+    {
+        "id": "8c782698.eda4a",
+        "type": "debug",
+        "z": "43ca71ea.a470d8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 930,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "50e484fd.f41184",
+        "type": "comment",
+        "z": "43ca71ea.a470d8",
+        "name": "Pick a #hashtag to follow",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    }
+]

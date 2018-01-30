@@ -1,0 +1,205 @@
+[
+    {
+        "id": "712f2cc2.9a85ec",
+        "type": "tab",
+        "label": "Tweet Sentiment",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "d05b9723.5e1708",
+        "type": "debug",
+        "z": "712f2cc2.9a85ec",
+        "name": "Positive Tweet debug",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 920,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "134cc84e.28e0a",
+        "type": "switch",
+        "z": "712f2cc2.9a85ec",
+        "name": "Positive / Negative Tweets",
+        "property": "sentiment.score",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "2",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 610,
+        "y": 340,
+        "wires": [
+            [
+                "d05b9723.5e1708"
+            ],
+            [
+                "4ac33d24.a305fc"
+            ]
+        ]
+    },
+    {
+        "id": "cd83ccf1.e03a48",
+        "type": "debug",
+        "z": "712f2cc2.9a85ec",
+        "name": "msg.sentiment.score",
+        "active": true,
+        "console": "false",
+        "complete": "sentiment.score",
+        "x": 600,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "96099fc4.b4642",
+        "type": "twitter out",
+        "z": "712f2cc2.9a85ec",
+        "twitter": "",
+        "name": "Retweet positive tweets",
+        "x": 920,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "60b4b253.d7a2ec",
+        "type": "twilio out",
+        "z": "712f2cc2.9a85ec",
+        "service": "_ext_",
+        "twilio": "79146d82.4e7754",
+        "from": "",
+        "number": "",
+        "name": "SMS to Phone",
+        "x": 900,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "aa8c5eee.3d991",
+        "type": "twitter in",
+        "z": "712f2cc2.9a85ec",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "Listen to twitter feed",
+        "topic": "tweets",
+        "inputs": 1,
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "530914da.c11cc4",
+                "a1deecfa.b5fa6",
+                "ebe2eab7.fc494"
+            ]
+        ]
+    },
+    {
+        "id": "530914da.c11cc4",
+        "type": "debug",
+        "z": "712f2cc2.9a85ec",
+        "name": "msg.tweet details",
+        "active": true,
+        "console": "false",
+        "complete": "tweet",
+        "x": 490,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "2e0e89fa.2a89b6",
+        "type": "sentiment",
+        "z": "712f2cc2.9a85ec",
+        "name": "Sentiment of Tweets",
+        "x": 350,
+        "y": 340,
+        "wires": [
+            [
+                "cd83ccf1.e03a48",
+                "134cc84e.28e0a"
+            ]
+        ]
+    },
+    {
+        "id": "4ac33d24.a305fc",
+        "type": "debug",
+        "z": "712f2cc2.9a85ec",
+        "name": "Negative Tweets",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 900,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "a1deecfa.b5fa6",
+        "type": "function",
+        "z": "712f2cc2.9a85ec",
+        "name": "Remove URLS and replace #",
+        "func": "var tweet = msg.tweet.text;\nvar newtweet = tweet.replace(/#/g, \" Hash tag \");\n\n// regex from https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript\nmsg.payload = newtweet.replace( /(([a-z]+:\\/\\/)?(([a-z0-9\\-]+\\.)+([a-z]{2}|biz|com|co|edu|gov|info|net|org|ly))(:[0-9]{1,5})?(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&amp;]*)?)?(#[a-zA-Z0-9!$&'()*+.=-_~:@/?]*)?)(\\s+|$)/gi, \"see short URL \" );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520,
+        "y": 140,
+        "wires": [
+            [
+                "deb57d9.2a6038",
+                "2e0e89fa.2a89b6"
+            ]
+        ]
+    },
+    {
+        "id": "deb57d9.2a6038",
+        "type": "debug",
+        "z": "712f2cc2.9a85ec",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ebe2eab7.fc494",
+        "type": "debug",
+        "z": "712f2cc2.9a85ec",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "tweet.text",
+        "x": 480,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "945cffb7.ce0d",
+        "type": "comment",
+        "z": "712f2cc2.9a85ec",
+        "name": "Pick a #hashtag to follow",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "79146d82.4e7754",
+        "type": "twilio-api",
+        "z": "712f2cc2.9a85ec",
+        "sid": "",
+        "from": "",
+        "name": "My Twilio"
+    }
+]

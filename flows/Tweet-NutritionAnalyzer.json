@@ -1,0 +1,1136 @@
+[
+    {
+        "id": "62e4183b.38fef8",
+        "type": "tab",
+        "label": "Twitter Food Analysis",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "40ee7d2c.314894",
+        "type": "function",
+        "z": "62e4183b.38fef8",
+        "name": "Extract Twitter Image URL",
+        "func": "msg.payload = \"\";\nif (typeof msg.tweet.entities.media !== 'undefined') {\n  if (typeof msg.tweet.entities.media[0].media_url !== 'undefined') {\n    msg.payload = msg.tweet.entities.media[0].media_url;\n  }  \n}\n\nif (typeof msg.tweet.extended_tweet !== 'undefined') {\n    if (typeof msg.tweet.extended_tweet.entities.media !== 'undefined') {\n      if (typeof msg.tweet.extended_tweet.entities.media[0].media_url !== 'undefined') {\n        msg.payload = msg.tweet.extended_tweet.entities.media[0].media_url;\n      }  \n    }\n}\n\nif(typeof msg.tweet.retweeted_status !== 'undefined') {\n    if( typeof msg.tweet.retweeted_status.extended_tweet !== 'undefined') {\n        if( typeof msg.tweet.retweeted_status.extended_tweet.entities !== 'undefined') {\n            if( typeof msg.tweet.retweeted_status.extended_tweet.entities.media[0].media_url !== 'undefined') {\n                msg.payload = msg.tweet.retweeted_status.extended_tweet.entities.media[0].media_url;\n            }\n        }\n    }\n}\n// Include the pre-trained food model classifier and any other custom classifier you might have built\nmsg.params = {};\nmsg.params[\"classifier_ids\"]=\"food\";\n//msg.params[\"classifier_ids\"]=\"default,food\";\n\nif( msg.payload.length ) {\n    return [ msg, null ];\n} else {\n    return [ null, msg ];\n}",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 370.00001525878906,
+        "y": 147.14284133911133,
+        "wires": [
+            [
+                "8a76a72b.2b1148",
+                "b09b750e.73616",
+                "3cb0be1f.ebce1a"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "8a76a72b.2b1148",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "Image URL to analyze",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 660,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "a0365dcc.3b9238",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "result",
+        "x": 840,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "3cb0be1f.ebce1a",
+        "type": "visual-recognition-v3",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "apikey": "",
+        "image-feature": "classifyImage",
+        "lang": "en",
+        "x": 640,
+        "y": 180,
+        "wires": [
+            [
+                "a0365dcc.3b9238",
+                "9ceadf52.ae0268",
+                "a0a18cf5.5c469"
+            ]
+        ]
+    },
+    {
+        "id": "b2f4b48e.72d1b8",
+        "type": "twitter in",
+        "z": "62e4183b.38fef8",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "",
+        "topic": "tweets",
+        "inputs": 1,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "40ee7d2c.314894",
+                "8503b267.81d728",
+                "8a1b9a29.6220f8",
+                "d8de1dc2.bbb998"
+            ]
+        ]
+    },
+    {
+        "id": "8503b267.81d728",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "tweet",
+        "x": 364.28576278686523,
+        "y": 104.28573417663574,
+        "wires": []
+    },
+    {
+        "id": "9ad5991e.e8f788",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tweet",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 240,
+        "y": 240,
+        "wires": [
+            [
+                "40ee7d2c.314894",
+                "d89f6feb.f8919"
+            ]
+        ]
+    },
+    {
+        "id": "c70d1fcd.ac204",
+        "type": "comment",
+        "z": "62e4183b.38fef8",
+        "name": "Sample Grilled Salmon Tweet",
+        "info": "",
+        "x": 160,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "9ceadf52.ae0268",
+        "type": "function",
+        "z": "62e4183b.38fef8",
+        "name": "Process Results",
+        "func": "if (typeof msg.result == 'undefined') {\n    return null;\n}\n\n// Text Extraction\nif (typeof msg.result.images[0].text != 'undefined') {\n    var image_text = msg.result.images[0].text;\n    msg.payload = image_text;\n    msg.template = image_text;\n    if( image_text.length >0 ) {\n       msg.template= \"Watson found the words: \"+image_text;\n    }\n    return msg;\n}\n\nvar bestcolor = -1;\nvar colorscore = 0;\nvar c_id = 0;\nvar say = \"\";\nvar item;\n\nfor ( c_id=0; c_id < (msg.result.images[0].classifiers.length); c_id++ ){\n    // find the best color, if any\n    for( i =0; i<(msg.result.images[0].classifiers[c_id].classes.length); i++ ){\n      var object = msg.result.images[0].classifiers[c_id].classes[i].class;\n      if ( object.includes(\"color\") ) {\n        if( msg.result.images[0].classifiers[c_id].classes[i].score > colorscore){\n            bestcolor = i;\n            colorscore = msg.result.images[0].classifiers[c_id].classes[i].score;\n        }\n      }\n    }\n \n    var bestItem = 0;\n    var itemScore = 0;\n    for( i =0; i<(msg.result.images[0].classifiers[c_id].classes.length); i++ ){\n      var object = msg.result.images[0].classifiers[c_id].classes[i].class;\n      if ( !object.includes(\"color\") ) {\n        if( msg.result.images[0].classifiers[c_id].classes[i].score > itemScore){\n            bestItem = i;\n            itemScore =  msg.result.images[0].classifiers[c_id].classes[i].score;\n        }\n      }\n    }\n \n     if( bestcolor != \"-1\") {\n        // found a color\n        item = msg.result.images[0].classifiers[c_id].classes[bestcolor].class + \" \" + msg.result.images[0].classifiers[c_id].classes[bestItem].class;\n        bestcolor = -1;\n    } else {\n       item = msg.result.images[0].classifiers[c_id].classes[bestItem].class;\n    }\n//    say = say + \" Watson's \" + msg.result.images[0].classifiers[c_id].name + \" classifier thinks this picture contains a \" + item +\".\";\n    //say = say + \" Watson thinks this picture contains \" + item +\".\";\n    say = say + \" Watson thinks this picture contains \" + msg.result.images[0].classifiers[0].classes[0].class +\".\";\n}\nmsg.payload =  say;\n// msg.food = msg.result.images[0].classifiers[0];\n\nvar picInfo = msg.result.images[0].classifiers[0].classes;\nvar arrayLength = picInfo.length;\n\nmsg.template=\"<style>\";\nmsg.template=msg.template+\"table { width: 440px; margin-top: 10px; }\";\nmsg.template=msg.template+\"tr:nth-child(even){background-color: #f2f2f2;}\";\nmsg.template=msg.template+\"th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; width: 10%;}\";\nmsg.template=msg.template+\"</style>\";\n\nmsg.template=msg.template+\"<h2>\"+say+\"</h2><table span=100%><tr><th>Class</th><th>Confidence</th></tr>\";\nfor (var i = 0; i < arrayLength; i++) {\n  msg.template = msg.template + \"<tr><td>\" + picInfo[i].class + \"</td><td>\" + picInfo[i].score + \"</td></tr>\";\n}\nmsg.template = msg.template + \"</table>\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 860,
+        "y": 180,
+        "wires": [
+            [
+                "ef29b5e5.656b8",
+                "d7eda1a.5536ce"
+            ]
+        ]
+    },
+    {
+        "id": "ef29b5e5.656b8",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "What did Watson find?",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 1100,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "8a1b9a29.6220f8",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tweet.user.screen_name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 20,
+        "wires": [
+            [
+                "8048bf85.d76bc8"
+            ]
+        ]
+    },
+    {
+        "id": "a9dce61c.ad5c18",
+        "type": "inject",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "topic": "",
+        "payload": "{\"created_at\":\"Sun Oct 15 13:31:53 +0000 2017\",\"id\":919556434886524900,\"id_str\":\"919556434886524933\",\"text\":\"Again, with a different one\\n#healthhackathonfood https://t.co/vYOxEezgMY\",\"display_text_range\":[0,48],\"source\":\"<a href=\\\"http://twitter.com\\\" rel=\\\"nofollow\\\">Twitter Web Client</a>\",\"truncated\":false,\"in_reply_to_status_id\":null,\"in_reply_to_status_id_str\":null,\"in_reply_to_user_id\":null,\"in_reply_to_user_id_str\":null,\"in_reply_to_screen_name\":null,\"user\":{\"id\":919361554239369200,\"id_str\":\"919361554239369216\",\"name\":\"SPtest\",\"screen_name\":\"s_ptest\",\"location\":null,\"url\":null,\"description\":null,\"translator_type\":\"none\",\"protected\":false,\"verified\":false,\"followers_count\":0,\"friends_count\":0,\"listed_count\":0,\"favourites_count\":0,\"statuses_count\":17,\"created_at\":\"Sun Oct 15 00:37:30 +0000 2017\",\"utc_offset\":null,\"time_zone\":null,\"geo_enabled\":false,\"lang\":\"en\",\"contributors_enabled\":false,\"is_translator\":false,\"profile_background_color\":\"F5F8FA\",\"profile_background_image_url\":\"\",\"profile_background_image_url_https\":\"\",\"profile_background_tile\":false,\"profile_link_color\":\"1DA1F2\",\"profile_sidebar_border_color\":\"C0DEED\",\"profile_sidebar_fill_color\":\"DDEEF6\",\"profile_text_color\":\"333333\",\"profile_use_background_image\":true,\"profile_image_url\":\"http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\",\"profile_image_url_https\":\"https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png\",\"default_profile\":true,\"default_profile_image\":false,\"following\":null,\"follow_request_sent\":null,\"notifications\":null},\"geo\":null,\"coordinates\":null,\"place\":null,\"contributors\":null,\"is_quote_status\":false,\"quote_count\":0,\"reply_count\":0,\"retweet_count\":0,\"favorite_count\":0,\"entities\":{\"hashtags\":[{\"text\":\"healthhackathonfood\",\"indices\":[28,48]}],\"urls\":[],\"user_mentions\":[],\"symbols\":[],\"media\":[{\"id\":919556428821442600,\"id_str\":\"919556428821442560\",\"indices\":[49,72],\"media_url\":\"http://pbs.twimg.com/media/DMLrszLUMAA75Sb.jpg\",\"media_url_https\":\"https://pbs.twimg.com/media/DMLrszLUMAA75Sb.jpg\",\"url\":\"https://t.co/vYOxEezgMY\",\"display_url\":\"pic.twitter.com/vYOxEezgMY\",\"expanded_url\":\"https://twitter.com/s_ptest/status/919556434886524933/photo/1\",\"type\":\"photo\",\"sizes\":{\"medium\":{\"w\":720,\"h\":480,\"resize\":\"fit\"},\"large\":{\"w\":720,\"h\":480,\"resize\":\"fit\"},\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"small\":{\"w\":680,\"h\":453,\"resize\":\"fit\"}}}]},\"extended_entities\":{\"media\":[{\"id\":919556428821442600,\"id_str\":\"919556428821442560\",\"indices\":[49,72],\"media_url\":\"http://pbs.twimg.com/media/DMLrszLUMAA75Sb.jpg\",\"media_url_https\":\"https://pbs.twimg.com/media/DMLrszLUMAA75Sb.jpg\",\"url\":\"https://t.co/vYOxEezgMY\",\"display_url\":\"pic.twitter.com/vYOxEezgMY\",\"expanded_url\":\"https://twitter.com/s_ptest/status/919556434886524933/photo/1\",\"type\":\"photo\",\"sizes\":{\"medium\":{\"w\":720,\"h\":480,\"resize\":\"fit\"},\"large\":{\"w\":720,\"h\":480,\"resize\":\"fit\"},\"thumb\":{\"w\":150,\"h\":150,\"resize\":\"crop\"},\"small\":{\"w\":680,\"h\":453,\"resize\":\"fit\"}}}]},\"favorited\":false,\"retweeted\":false,\"possibly_sensitive\":false,\"filter_level\":\"low\",\"lang\":\"en\",\"timestamp_ms\":\"1508074313266\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 90,
+        "y": 240,
+        "wires": [
+            [
+                "9ad5991e.e8f788"
+            ]
+        ]
+    },
+    {
+        "id": "d89f6feb.f8919",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 430,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "8048bf85.d76bc8",
+        "type": "ui_text",
+        "z": "62e4183b.38fef8",
+        "group": "331b94d7.f51244",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Tweet Username",
+        "label": "Username: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 770,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "b09b750e.73616",
+        "type": "ui_template",
+        "z": "62e4183b.38fef8",
+        "group": "331b94d7.f51244",
+        "name": "Photo",
+        "order": 3,
+        "width": "9",
+        "height": "9",
+        "format": "<div ng-bind-html></div>\n<img width=\"300\" height=\"300\" alt=\"Twitter Image\" src=\"{{msg.payload}}\"/>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "templateScope": "local",
+        "x": 610,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7eda1a.5536ce",
+        "type": "ui_template",
+        "z": "62e4183b.38fef8",
+        "group": "36abeaed.46b056",
+        "name": "Results Table",
+        "order": 1,
+        "width": "9",
+        "height": "10",
+        "format": "<div ng-bind-html=\"msg.template\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 1070,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c65ac783.5453c",
+        "type": "http request",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 490,
+        "y": 660,
+        "wires": [
+            [
+                "e7d2be7d.df9a"
+            ]
+        ]
+    },
+    {
+        "id": "a76df52d.46dca8",
+        "type": "inject",
+        "z": "62e4183b.38fef8",
+        "name": "Start",
+        "topic": "",
+        "payload": "yogurt",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 90,
+        "y": 580,
+        "wires": [
+            [
+                "ee33c366.f1e778"
+            ]
+        ]
+    },
+    {
+        "id": "aceecfb0.900d7",
+        "type": "function",
+        "z": "62e4183b.38fef8",
+        "name": "USDA API url",
+        "func": "msg.url = \"https://api.nal.usda.gov/ndb/search/?format=json&q=\"+msg.food+\"&sort=r&max=25&offset=0&api_key=\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 660,
+        "wires": [
+            [
+                "c65ac783.5453c"
+            ]
+        ]
+    },
+    {
+        "id": "4c57ae8b.5f0da",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 790,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "e7d2be7d.df9a",
+        "type": "json",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "pretty": false,
+        "x": 630,
+        "y": 660,
+        "wires": [
+            [
+                "4c57ae8b.5f0da",
+                "64a5f706.0242a8"
+            ]
+        ]
+    },
+    {
+        "id": "ba6ee407.6160c",
+        "type": "http request",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 390,
+        "y": 800,
+        "wires": [
+            [
+                "e0b4de28.6f34a8"
+            ]
+        ]
+    },
+    {
+        "id": "20ea333e.6e389c",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 710,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "64a5f706.0242a8",
+        "type": "function",
+        "z": "62e4183b.38fef8",
+        "name": "Call USDA API",
+        "func": "msg.url = \"https://api.nal.usda.gov/ndb/V2/reports?ndbno=\"+msg.payload.list.item[0].ndbno+\"&type=f&format=json&api_key=\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 660,
+        "wires": [
+            [
+                "ba6ee407.6160c"
+            ]
+        ]
+    },
+    {
+        "id": "e0b4de28.6f34a8",
+        "type": "json",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "pretty": false,
+        "x": 550,
+        "y": 800,
+        "wires": [
+            [
+                "20ea333e.6e389c",
+                "30cd1ace.d21826"
+            ]
+        ]
+    },
+    {
+        "id": "feb09efe.51adb8",
+        "type": "ui_template",
+        "z": "62e4183b.38fef8",
+        "group": "2a1c74a8.0b2094",
+        "name": "Nutrients Table",
+        "order": 2,
+        "width": "9",
+        "height": "10",
+        "format": "<div ng-bind-html=\"msg.template\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "templateScope": "local",
+        "x": 1080,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af9f5bf7.f323c",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "What type of food?",
+        "active": true,
+        "console": "false",
+        "complete": "food",
+        "x": 370,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "30cd1ace.d21826",
+        "type": "function",
+        "z": "62e4183b.38fef8",
+        "name": "Build Nutrition Table",
+        "func": "msg.template=\"<style>\";\nmsg.template=msg.template+\"table { width: 440px; margin-top: 10px; }\";\nmsg.template=msg.template+\"tr:nth-child(even){background-color: #f2f2f2;}\";\nmsg.template=msg.template+\"th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; width: 10%;}\";\nmsg.template=msg.template+\"</style>\";\n\nmsg.template=msg.template+\"<h2>Ingredients:</h2>\"+\"<p>\"+msg.payload.foods[0].food.desc.name+\"</p><table span=100%><tr><th>Nutritional Information</th><th>Value</th></tr>\";\nvar arrayLength = msg.payload.foods[0].food.nutrients.length;\nfor (var i = 0; i < arrayLength; i++) {\n  msg.template = msg.template + \"<tr><td>\" + msg.payload.foods[0].food.nutrients[i].name + \"</td><td>\" + msg.payload.foods[0].food.nutrients[i].value + msg.payload.foods[0].food.nutrients[i].unit + \"</td></tr>\";\n  if (msg.payload.foods[0].food.nutrients[i].nutrient_id==269) msg.sugar = msg.payload.foods[0].food.nutrients[i].value;\n  if (msg.payload.foods[0].food.nutrients[i].nutrient_id==204) msg.fat = msg.payload.foods[0].food.nutrients[i].value;\n}\nmsg.template = msg.template + \"</table>\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 740,
+        "y": 800,
+        "wires": [
+            [
+                "feb09efe.51adb8",
+                "9d92ce07.965a48",
+                "2f9a535.89155ac",
+                "15adc6a8.f97881",
+                "83ae58ad.a8591",
+                "3f35256a.b19d42"
+            ]
+        ]
+    },
+    {
+        "id": "9d92ce07.965a48",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "template",
+        "x": 1070,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "18cbbd4a.ba16eb",
+        "type": "switch",
+        "z": "62e4183b.38fef8",
+        "name": "Food?",
+        "property": "food",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "non-food",
+                "vt": "str"
+            },
+            {
+                "t": "neq",
+                "v": "non-food",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 150,
+        "y": 400,
+        "wires": [
+            [
+                "c25a0f8e.9ae388"
+            ],
+            [
+                "af9f5bf7.f323c",
+                "c758226c.bab3d",
+                "aceecfb0.900d7",
+                "a680ae5a.4b66c8"
+            ]
+        ]
+    },
+    {
+        "id": "c25a0f8e.9ae388",
+        "type": "function",
+        "z": "62e4183b.38fef8",
+        "name": "Not a Food - Empty Table",
+        "func": "msg.template=\"<style>\";\nmsg.template=msg.template+\"table { width: 440px; margin-top: 10px; }\";\nmsg.template=msg.template+\"th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #FFFFFF; width: 50%;}\";\n\nmsg.template=msg.template+\"</style><h1>Not Valid</h1>\";\nmsg.template = msg.template;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 400,
+        "wires": [
+            [
+                "feb09efe.51adb8"
+            ]
+        ]
+    },
+    {
+        "id": "2f9a535.89155ac",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "sugar",
+        "active": true,
+        "console": "false",
+        "complete": "sugar",
+        "x": 1050,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "76db02c8.2d069c",
+        "type": "ui_text",
+        "z": "62e4183b.38fef8",
+        "group": "2a1c74a8.0b2094",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Sugar Warnings",
+        "label": "",
+        "format": "{{msg.sugar}}",
+        "layout": "col-center",
+        "x": 1240,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "ec157659.386298",
+        "type": "ui_text",
+        "z": "62e4183b.38fef8",
+        "group": "2a1c74a8.0b2094",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Fat Warning",
+        "label": "",
+        "format": "{{msg.fat}}",
+        "layout": "col-center",
+        "x": 1230,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "15adc6a8.f97881",
+        "type": "switch",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "property": "sugar",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "15",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "15",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 890,
+        "y": 860,
+        "wires": [
+            [
+                "4f5a26ca.e133f8"
+            ],
+            [
+                "739173d.e36308c"
+            ]
+        ]
+    },
+    {
+        "id": "4f5a26ca.e133f8",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sugar",
+                "pt": "msg",
+                "to": "Warning: High in Sugar",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 840,
+        "wires": [
+            [
+                "76db02c8.2d069c"
+            ]
+        ]
+    },
+    {
+        "id": "83ae58ad.a8591",
+        "type": "switch",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "property": "fat",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "5",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "5",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 890,
+        "y": 940,
+        "wires": [
+            [
+                "9a555d3f.306da8"
+            ],
+            [
+                "34bcc7b.2dd7d38"
+            ]
+        ]
+    },
+    {
+        "id": "9a555d3f.306da8",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "fat",
+                "pt": "msg",
+                "to": "Warning: High in Fat",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1030,
+        "y": 920,
+        "wires": [
+            [
+                "ec157659.386298"
+            ]
+        ]
+    },
+    {
+        "id": "3f35256a.b19d42",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "fat",
+        "active": true,
+        "console": "false",
+        "complete": "fat",
+        "x": 1050,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "34bcc7b.2dd7d38",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "fat",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1030,
+        "y": 960,
+        "wires": [
+            [
+                "ec157659.386298"
+            ]
+        ]
+    },
+    {
+        "id": "739173d.e36308c",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sugar",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 880,
+        "wires": [
+            [
+                "76db02c8.2d069c"
+            ]
+        ]
+    },
+    {
+        "id": "c758226c.bab3d",
+        "type": "switch",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "property": "food",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "yogurt",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "burger",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "apple",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "cheese",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "fish",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "omelette",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 7,
+        "x": 330,
+        "y": 560,
+        "wires": [
+            [
+                "206c19f1.5d5cee"
+            ],
+            [
+                "206c19f1.5d5cee"
+            ],
+            [
+                "206c19f1.5d5cee"
+            ],
+            [
+                "206c19f1.5d5cee"
+            ],
+            [
+                "206c19f1.5d5cee"
+            ],
+            [
+                "206c19f1.5d5cee"
+            ],
+            [
+                "9f76bdd8.277798"
+            ]
+        ]
+    },
+    {
+        "id": "206c19f1.5d5cee",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "safe",
+                "pt": "msg",
+                "to": "This food item may not comply to a neutropenic diet",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 560,
+        "wires": [
+            [
+                "87526602.c8de6"
+            ]
+        ]
+    },
+    {
+        "id": "9f76bdd8.277798",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "safe",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 600,
+        "wires": [
+            [
+                "87526602.c8de6"
+            ]
+        ]
+    },
+    {
+        "id": "87526602.c8de6",
+        "type": "ui_text",
+        "z": "62e4183b.38fef8",
+        "group": "36abeaed.46b056",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Neutropenic?",
+        "label": "",
+        "format": "{{msg.safe}}",
+        "layout": "col-center",
+        "x": 706.1000366210938,
+        "y": 575.6000061035156,
+        "wires": []
+    },
+    {
+        "id": "ee33c366.f1e778",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "food",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 130,
+        "y": 660,
+        "wires": [
+            [
+                "aceecfb0.900d7",
+                "c758226c.bab3d"
+            ]
+        ]
+    },
+    {
+        "id": "67d96879.83ea88",
+        "type": "ui_audio",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "group": "36abeaed.46b056",
+        "voice": "0",
+        "always": true,
+        "x": 720,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a680ae5a.4b66c8",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "Announce food",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "food",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 440,
+        "wires": [
+            [
+                "72b24c7d.6ffe6c"
+            ]
+        ]
+    },
+    {
+        "id": "72b24c7d.6ffe6c",
+        "type": "watson-text-to-speech",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "lang": "en-US",
+        "langhidden": "en-US",
+        "langcustom": "NoCustomisationSetting",
+        "langcustomhidden": "",
+        "voice": "en-US_LisaVoice",
+        "voicehidden": "en-US_LisaVoice",
+        "format": "audio/wav",
+        "password": "",
+        "payload-response": true,
+        "default-endpoint": true,
+        "service-endpoint": "https://stream.watsonplatform.net/text-to-speech/api",
+        "x": 530,
+        "y": 440,
+        "wires": [
+            [
+                "67d96879.83ea88",
+                "24219043.1d302"
+            ]
+        ]
+    },
+    {
+        "id": "96b22b9b.4f20c",
+        "type": "ui_text",
+        "z": "62e4183b.38fef8",
+        "group": "331b94d7.f51244",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Tweet Text",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 750,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d8de1dc2.bbb998",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tweet.text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 60,
+        "wires": [
+            [
+                "96b22b9b.4f20c"
+            ]
+        ]
+    },
+    {
+        "id": "24219043.1d302",
+        "type": "debug",
+        "z": "62e4183b.38fef8",
+        "name": "Speech file",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 730,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "a0a18cf5.5c469",
+        "type": "change",
+        "z": "62e4183b.38fef8",
+        "name": "Food classification",
+        "rules": [
+            {
+                "t": "set",
+                "p": "food",
+                "pt": "msg",
+                "to": "result.images[0].classifiers[0].classes[0].class",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 870,
+        "y": 220,
+        "wires": [
+            [
+                "18cbbd4a.ba16eb"
+            ]
+        ]
+    },
+    {
+        "id": "b9594c8d.a94508",
+        "type": "comment",
+        "z": "62e4183b.38fef8",
+        "name": "@FoodNetwork",
+        "info": "",
+        "x": 123.5,
+        "y": 22,
+        "wires": []
+    },
+    {
+        "id": "17feecce.275a2b",
+        "type": "comment",
+        "z": "62e4183b.38fef8",
+        "name": "USDA Docs and API Key",
+        "info": "https://ndb.nal.usda.gov/ndb/doc/index#",
+        "x": 320,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "331b94d7.f51244",
+        "type": "ui_group",
+        "z": "62e4183b.38fef8",
+        "name": "Tweet",
+        "tab": "3e4f9e6b.46cdd2",
+        "order": 1,
+        "disp": true,
+        "width": "9"
+    },
+    {
+        "id": "36abeaed.46b056",
+        "type": "ui_group",
+        "z": "62e4183b.38fef8",
+        "name": "Results",
+        "tab": "3e4f9e6b.46cdd2",
+        "order": 2,
+        "disp": true,
+        "width": "9"
+    },
+    {
+        "id": "2a1c74a8.0b2094",
+        "type": "ui_group",
+        "z": "",
+        "name": "Nutrition",
+        "tab": "3e4f9e6b.46cdd2",
+        "order": 3,
+        "disp": true,
+        "width": "9"
+    },
+    {
+        "id": "3e4f9e6b.46cdd2",
+        "type": "ui_tab",
+        "z": "62e4183b.38fef8",
+        "name": "Twitter Nutrition Analysis",
+        "icon": "dashboard",
+        "order": 3
+    }
+]
