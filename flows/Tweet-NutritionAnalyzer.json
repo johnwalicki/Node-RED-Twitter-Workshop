@@ -45,7 +45,7 @@
         "active": true,
         "console": "false",
         "complete": "result",
-        "x": 840,
+        "x": 850,
         "y": 140,
         "wires": []
     },
@@ -57,7 +57,7 @@
         "apikey": "",
         "image-feature": "classifyImage",
         "lang": "en",
-        "x": 640,
+        "x": 650,
         "y": 180,
         "wires": [
             [
@@ -320,7 +320,7 @@
         "type": "function",
         "z": "62e4183b.38fef8",
         "name": "USDA API url",
-        "func": "msg.url = \"https://api.nal.usda.gov/ndb/search/?format=json&q=\"+msg.food+\"&sort=r&max=25&offset=0&api_key=\";\nreturn msg;",
+        "func": "msg.url = \"https://api.nal.usda.gov/ndb/search/?format=json&q=\"+msg.food+\"&sort=r&max=25&offset=0&api_key=yeD3mkKMPqq4MKt1ByS5T7l2nV2kNhoIx2bnbBZA\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 330,
@@ -392,7 +392,7 @@
         "type": "function",
         "z": "62e4183b.38fef8",
         "name": "Call USDA API",
-        "func": "msg.url = \"https://api.nal.usda.gov/ndb/V2/reports?ndbno=\"+msg.payload.list.item[0].ndbno+\"&type=f&format=json&api_key=\";\nreturn msg;",
+        "func": "msg.url = \"https://api.nal.usda.gov/ndb/V2/reports?ndbno=\"+msg.payload.list.item[0].ndbno+\"&type=f&format=json&api_key=yeD3mkKMPqq4MKt1ByS5T7l2nV2kNhoIx2bnbBZA\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 800,
@@ -1093,6 +1093,16 @@
         "info": "https://ndb.nal.usda.gov/ndb/doc/index#",
         "x": 320,
         "y": 700,
+        "wires": []
+    },
+    {
+        "id": "11676187.70108e",
+        "type": "comment",
+        "z": "62e4183b.38fef8",
+        "name": "Example food tweets here",
+        "info": "https://twitter.com/s_ptest",
+        "x": 150,
+        "y": 320,
         "wires": []
     },
     {
