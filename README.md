@@ -28,27 +28,27 @@ With a little bit of Node-RED Dashboard magic, you can create Dashboards that lo
 ![Twitter Sentiment History Dashboard Screenshot](/screenshots/Node-RED-Twitter-TweetSentiment-Dashboard.png?raw=true "Twitter Sentiment History Dashboard")
 
 ## Node-RED flows in this repository:
-A simple flow that watches a Twitter feed. Download the [/flows/Tweet-Simple.json](flow)
+A simple flow that watches a Twitter feed. Download the [flow](/flows/Tweet-Simple.json)
 ![Simple Twitter flow](/screenshots/Node-RED-Twitter-TweetSimple.png?raw=true "Simple Twitter flow")
 ---
-Perform Sentiment analysis of Tweets. You could retweet positive tweets or SMS tweets to your friends. Download the [/flows/Tweet-Sentiment.json](flow)
+Perform Sentiment analysis of Tweets. You could retweet positive tweets or SMS tweets to your friends. Download the [flow](/flows/Tweet-Sentiment.json)
 ![Sentiment Twitter flow](/screenshots/Node-RED-Twitter-TweetSentiment.png?raw=true "Sentiment Twitter flow")
 ---
-Perform Tone analysis of Tweets using the Watson Tone Analyzer service. Download the [/flows/Tweet-Tone.json](flow)
+Perform Tone analysis of Tweets using the Watson Tone Analyzer service. Download the [flow](/flows/Tweet-Tone.json)
 ![Watson Tone Analyzer Twitter flow](/screenshots/Node-RED-Twitter-TweetTone.png?raw=true "Watson Tone Analysis Twitter flow")
 ---
-Speak Tweets using the Watson Text to Speech service. Download the [/flows/Tweet-Speaker.json](flow)
+Speak Tweets using the Watson Text to Speech service. Download the [flow](/flows/Tweet-Speaker.json)
 ![Watson Speech to Text Twitter flow](/screenshots/Node-RED-Twitter-TweetSpeak.png?raw=true "Watson Speech to Text Twitter flow")
 ---
-Store Tweets in a Cloudant database for historical analysis. Download the [/flows/Tweet-Store.json](flow)
+Store Tweets in a Cloudant database for historical analysis. Download the [flow](/flows/Tweet-Store.json)
 ![Store Tweets in Cloudant flow](/screenshots/Node-RED-Twitter-StoreTweet.png?raw=true "Store Tweets in Cloudant flow")
 ---
-Build a Node-RED Dashboard that charts Twitter hashtag sentiment history. Download the [/flows/Tweet-Dashboard.json](flow)
+Build a Node-RED Dashboard that charts Twitter hashtag sentiment history. Download the [flow](/flows/Tweet-Dashboard.json)
 ![Twitter Dashboard flow](/screenshots/Node-RED-Twitter-TweetDashboard.png?raw=true "Twitter Sentiment History Dashboard flow")
 ---
-Perform Image analysis of pictures attached to Tweets using the Watson Visual Recognition service. Download the [/flows/Tweet-VisualRecognition.json](flow)
+Perform Image analysis of pictures attached to Tweets using the Watson Visual Recognition service. Download the [flow](/flows/Tweet-VisualRecognition.json)
 ![Watson Visual Recognition Image Analysis Twitter flow](/screenshots/Node-RED-Twitter-TweetImageAnalyzer.png?raw=true "Watson Visual Recognition Image Analysis Twitter flow")
 ---
-Build a Nutrition Image Analysis dashboard to report the ingredients and nutritional information from the USDA. Download the [/flows/Tweet-NutritionAnalyzer.json](flow)
+Build a Nutrition Image Analysis dashboard to report the ingredients and nutritional information from the USDA. Download the [flow](/flows/Tweet-NutritionAnalyzer.json)
 ![Nutrition Food Image Analysis Twitter flow](/screenshots/Node-RED-Twitter-TweetNutritionAnalyzer.png?raw=true "Nutrition Food Image Analysis Twitter flow")
 ---
