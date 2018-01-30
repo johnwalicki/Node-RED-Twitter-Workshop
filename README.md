@@ -5,21 +5,21 @@ These Node-RED flows use Twitter to introduce a variety of Node-RED visual progr
 These Twitter Node-RED recipes showcase:
 * A simple flow that watches a Twitter feed.
 * Perform Sentiment analysis of Tweets. You could retweet positive tweets or SMS tweets to your friends
-* Perform Tone analysis of Tweets using the [Watson Tone Analyzer](https://console.bluemix.net/docs/services/text-to-speech/getting-started.html#gettingStarted) service
+* Perform Tone analysis of Tweets using the [Watson Tone Analyzer](https://console.bluemix.net/docs/services/tone-analyzer/getting-started.html#getting-started-tutorial) service
 * Speak Tweets using the [Watson Text to Speech](https://console.bluemix.net/docs/services/text-to-speech/getting-started.html#gettingStarted) service
 * Store Tweets and Sentiment scores in a [Cloudant database](https://console.bluemix.net/docs/services/Cloudant/getting-started.html#getting-started-with-cloudant) for historical analysis
 * Build a Node-RED Dashboard that charts Twitter hashtag sentiment history
-* Perform Image analysis of pictures attached to Tweets using the [Watson Visual Recognition](https://console.bluemix.net/docs/services/text-to-speech/getting-started.html#gettingStarted) service
+* Perform Image analysis of pictures attached to Tweets using the [Watson Visual Recognition](https://console.bluemix.net/docs/services/visual-recognition/getting-started.html#getting-started-tutorial) service
 * Build a Nutrition Image Analysis dashboard to report the ingredients and nutritional information from the [USDA](https://ndb.nal.usda.gov/ndb/doc/index#)
-  * Tweet a picture of food and use the [Watson Visual Recognition](https://console.bluemix.net/docs/services/text-to-speech/getting-started.html#gettingStarted) custom [food classifier](https://www.ibm.com/blogs/bluemix/2017/05/watson-learns-see-food-introducing-watson-visual-recognition-food-model/). Great fun!
+  * Tweet a picture of food and use the [Watson Visual Recognition](https://console.bluemix.net/docs/services/visual-recognition/getting-started.html#getting-started-tutorial) custom [food classifier](https://www.ibm.com/blogs/bluemix/2017/05/watson-learns-see-food-introducing-watson-visual-recognition-food-model/). Great fun!
 
 You might want to learn from the Node-RED Twitter workshop that I wrote to teach Node-RED and Watson Cognitive services.
-*Follow the step-by-step instructions* to create all of these example [flows](https://github.com/johnwalicki/Node-RED-Twitter-Workshop/flows).
+*Follow the step-by-step instructions* to create all of these example [flows](/flows).
 
-If you're interested in trying these Node-RED recipes, find them [here](https://github.com/johnwalicki/Node-RED-Twitter-Workshop/flows):
+If you're interested in trying these Node-RED recipes, find them [here](/flows):  
 https://github.com/johnwalicki/Node-RED-Twitter-Workshop/flows
 
-Scroll down in this README.md to preview [screenshots](https://github.com/johnwalicki/Node-RED-Twitter-Workshop/screenshots) of the Node-RED flows.
+Scroll down in this README.md to preview [screenshots](/screenshots) of the Node-RED flows.
 
 With a little bit of Node-RED Dashboard magic, you can create Dashboards that look like this:
 ![Nutrition Twitter Dashboard Screenshot](/screenshots/Node-RED-Twitter-TweetNutritionAnalyzer-Dashboard.png?raw=true "Nutrition Twitter Image Analyzer Dashboard")
