@@ -101,8 +101,8 @@ Search for positive or negative tweets. You could retweet positive tweets or SMS
 
 Combine all of the flows in this tutorial into one dashboard that could be used as part of a Call for Code Natural Disaster Response application that listens to Tweets from survivors who mark themselves safe.
 
-![Call for Code Safe Twitter Dashboard](/screenshots/Node-RED-Twitter-CallforCode-Dashboard.png?raw=true "Node-RED Call for Code Safe Dashboard")
-![Call for Code Safe Twitter flow](/screenshots/Node-RED-Twitter-TweetWorldMap.png?raw=true "Node-RED Call for Code flow")
+![Call for Code Safe Twitter Dashboard](/screenshots/Node-RED-Twitter-TweetCallforCode-Dashboard.png?raw=true "Node-RED Call for Code Safe Dashboard")
+![Call for Code Safe Twitter flow](/screenshots/Node-RED-Twitter-TweetCallforCode.png?raw=true "Node-RED Call for Code flow")
 <p align="center">
   <strong>Get the Code: <a href="flows/Tweet-CfCSafe.json">Node-RED flow to plot Tweet locations of Safe Survivors</strong></a>
 </p>
