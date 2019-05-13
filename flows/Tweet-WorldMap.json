@@ -1,0 +1,802 @@
+[
+    {
+        "id": "f0daf366.906ad",
+        "type": "tab",
+        "label": "Map Tweets",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "2828703c.beeee",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "Create payload for map",
+        "rules": [
+            {
+                "t": "set",
+                "p": "store.text",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.sentiment",
+                "pt": "msg",
+                "to": "sentiment.score",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "store",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload.icon",
+                "pt": "msg",
+                "to": "fa-twitter-square",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 630,
+        "y": 480,
+        "wires": [
+            [
+                "3722e544.50865a",
+                "f9cbc3a0.599de8"
+            ]
+        ]
+    },
+    {
+        "id": "7ebc1b7d.a5363c",
+        "type": "debug",
+        "z": "f0daf366.906ad",
+        "name": "Payload",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 820,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "3722e544.50865a",
+        "type": "switch",
+        "z": "f0daf366.906ad",
+        "name": "Sentiment color",
+        "property": "payload.sentiment",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "lt",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 320,
+        "y": 660,
+        "wires": [
+            [
+                "7891287f.0106c8"
+            ],
+            [
+                "a03eea5d.a3851"
+            ],
+            [
+                "e5d6ca58.393788"
+            ]
+        ],
+        "inputLabels": [
+            "sentiment"
+        ],
+        "outputLabels": [
+            "neutral",
+            "postive",
+            ""
+        ]
+    },
+    {
+        "id": "7891287f.0106c8",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "Set to grey",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.iconColor",
+                "pt": "msg",
+                "to": "grey",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 600,
+        "wires": [
+            [
+                "75ba5407.0e754c",
+                "7ebc1b7d.a5363c"
+            ]
+        ]
+    },
+    {
+        "id": "a03eea5d.a3851",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "Set to green",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.iconColor",
+                "pt": "msg",
+                "to": "green",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 660,
+        "wires": [
+            [
+                "75ba5407.0e754c",
+                "7ebc1b7d.a5363c"
+            ]
+        ]
+    },
+    {
+        "id": "e5d6ca58.393788",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "Set to red",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.iconColor",
+                "pt": "msg",
+                "to": "red",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 720,
+        "wires": [
+            [
+                "75ba5407.0e754c",
+                "7ebc1b7d.a5363c"
+            ]
+        ]
+    },
+    {
+        "id": "75ba5407.0e754c",
+        "type": "worldmap",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "lat": "",
+        "lon": "",
+        "zoom": "",
+        "layer": "Esri",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "true",
+        "x": 810,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "637b9158.b22de8",
+        "type": "twitter in",
+        "z": "f0daf366.906ad",
+        "twitter": "",
+        "tags": "",
+        "user": "false",
+        "name": "",
+        "inputs": 1,
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "a41b8eff.180f4",
+                "9d880650.d3d7b"
+            ]
+        ]
+    },
+    {
+        "id": "e17bdf55.7b25b",
+        "type": "inject",
+        "z": "f0daf366.906ad",
+        "name": "Example",
+        "topic": "",
+        "payload": "{\"created_at\":\"Mon May 13 03:58:11 +0000 2019\",\"id\":1127776262246862848,\"id_str\":\"1127776262246862848\",\"text\":\"RT @johnwalicki: #CallforCode Fun Live coding event with @IBMDeveloper @johnwalicki - Using #NodeRED and AI to analyze social media https://t.c…\",\"source\":\"<a href=\\\"http://twitter.com\\\" rel=\\\"nofollow\\\">Twitter Web Client</a>\",\"truncated\":false,\"in_reply_to_status_id\":null,\"in_reply_to_status_id_str\":null,\"in_reply_to_user_id\":null,\"in_reply_to_user_id_str\":null,\"in_reply_to_screen_name\":null,\"user\":{\"id\":2577403879,\"id_str\":\"2577403879\",\"name\":\"John Walicki\",\"screen_name\":\"johnwalicki\",\"location\":\"Paramus,NJ\",\"url\":\"https://github.com/johnwalicki\",\"description\":\"IBM Watson Internet of Things Developer Advocate, Über Geek, Family Guy. #IoT #OpenSource #Linux #AI #CallforCode #IBMDroneDrop My tweets are my own.\",\"translator_type\":\"none\",\"protected\":false,\"verified\":false,\"followers_count\":5754,\"friends_count\":1536,\"listed_count\":161,\"favourites_count\":9012,\"statuses_count\":2521,\"created_at\":\"Thu Jun 19 19:54:32 +0000 2014\",\"utc_offset\":null,\"time_zone\":null,\"geo_enabled\":true,\"lang\":\"en\",\"contributors_enabled\":false,\"is_translator\":false,\"profile_background_color\":\"C0DEED\",\"profile_background_image_url\":\"http://abs.twimg.com/images/themes/theme1/bg.png\",\"profile_background_image_url_https\":\"https://abs.twimg.com/images/themes/theme1/bg.png\",\"profile_background_tile\":false,\"profile_link_color\":\"1DA1F2\",\"profile_sidebar_border_color\":\"C0DEED\",\"profile_sidebar_fill_color\":\"DDEEF6\",\"profile_text_color\":\"333333\",\"profile_use_background_image\":true,\"profile_image_url\":\"http://pbs.twimg.com/profile_images/711615965721718784/7My0kbZI_normal.jpg\",\"profile_image_url_https\":\"https://pbs.twimg.com/profile_images/711615965721718784/7My0kbZI_normal.jpg\",\"profile_banner_url\":\"https://pbs.twimg.com/profile_banners/2577403879/1556810267\",\"default_profile\":true,\"default_profile_image\":false,\"following\":null,\"follow_request_sent\":null,\"notifications\":null},\"geo\":null,\"coordinates\":null,\"place\":null,\"contributors\":null,\"retweeted_status\":{\"created_at\":\"Mon May 13 03:23:08 +0000 2019\",\"id\":1127776262246862848,\"id_str\":\"1127776262246862848\",\"text\":\"#CallforCode Fun Live coding event with @IBMDeveloper @johnwalicki - Using #NodeRED and AI to analyze social media https://t.co/cCmE7WyFUj\",\"source\":\"<a href=\\\"http://twitter.com\\\" rel=\\\"nofollow\\\">Twitter Web Client</a>\",\"truncated\":false,\"in_reply_to_status_id\":null,\"in_reply_to_status_id_str\":null,\"in_reply_to_user_id\":null,\"in_reply_to_user_id_str\":null,\"in_reply_to_screen_name\":null,\"user\":{\"id\":2577403879,\"id_str\":\"2577403879\",\"name\":\"John Walicki\",\"screen_name\":\"johnwalicki\",\"location\":\"New Jersey, USA\",\"url\":\"https://github.com/johnwalicki\",\"description\":\"IBM Watson Internet of Things Developer Advocate, Über Geek, Family Guy. #IoT #OpenSource #Linux #AI #CallforCode #IBMDroneDrop My tweets are my own.\",\"translator_type\":\"none\",\"protected\":false,\"verified\":false,\"followers_count\":5754,\"friends_count\":1536,\"listed_count\":161,\"favourites_count\":9012,\"statuses_count\":2520,\"created_at\":\"Thu Jun 19 19:54:32 +0000 2014\",\"utc_offset\":null,\"time_zone\":null,\"geo_enabled\":true,\"lang\":\"en\",\"contributors_enabled\":false,\"is_translator\":false,\"profile_background_color\":\"C0DEED\",\"profile_background_image_url\":\"http://abs.twimg.com/images/themes/theme1/bg.png\",\"profile_background_image_url_https\":\"https://abs.twimg.com/images/themes/theme1/bg.png\",\"profile_background_tile\":false,\"profile_link_color\":\"1DA1F2\",\"profile_sidebar_border_color\":\"C0DEED\",\"profile_sidebar_fill_color\":\"DDEEF6\",\"profile_text_color\":\"333333\",\"profile_use_background_image\":true,\"profile_image_url\":\"http://pbs.twimg.com/profile_images/711615965721718784/7My0kbZI_normal.jpg\",\"profile_image_url_https\":\"https://pbs.twimg.com/profile_images/711615965721718784/7My0kbZI_normal.jpg\",\"profile_banner_url\":\"https://pbs.twimg.com/profile_banners/2577403879/1556810267\",\"default_profile\":true,\"default_profile_image\":false,\"following\":null,\"follow_request_sent\":null,\"notifications\":null},\"geo\":null,\"coordinates\":null,\"place\":null,\"contributors\":null,\"is_quote_status\":false,\"quote_count\":0,\"reply_count\":0,\"retweet_count\":1,\"favorite_count\":1,\"entities\":{\"hashtags\":[{\"text\":\"CallforCode\",\"indices\":[0,12]},{\"text\":\"NodeRED\",\"indices\":[71,79]}],\"urls\":[{\"url\":\"https://t.co/cCmE7WyFUj\",\"expanded_url\":\"https://developer.ibm.com/callforcode/blogs/use-node-red-and-ai-to-analyze-social-media-after-a-disaster\",\"display_url\":\"developer.ibm.com/callforcode/bl…\",\"indices\":[111,134]}],\"user_mentions\":[{\"screen_name\":\"IBMDeveloper\",\"name\":\"IBM Developer\",\"id\":16362921,\"id_str\":\"16362921\",\"indices\":[36,49]},{\"screen_name\":\"johnwalicki\",\"name\":\"John Walicki\",\"id\":2577403879,\"id_str\":\"2577403879\",\"indices\":[50,62]}],\"symbols\":[]},\"favorited\":false,\"retweeted\":false,\"possibly_sensitive\":false,\"filter_level\":\"low\",\"lang\":\"en\"},\"is_quote_status\":false,\"quote_count\":0,\"reply_count\":0,\"retweet_count\":0,\"favorite_count\":0,\"entities\":{\"hashtags\":[{\"text\":\"CallforCode\",\"indices\":[17,29]},{\"text\":\"NodeRED\",\"indices\":[88,96]}],\"urls\":[],\"user_mentions\":[{\"screen_name\":\"johnwalicki\",\"name\":\"John Walicki\",\"id\":2577403879,\"id_str\":\"2577403879\",\"indices\":[3,15]},{\"screen_name\":\"IBMDeveloper\",\"name\":\"IBM Developer\",\"id\":16362921,\"id_str\":\"16362921\",\"indices\":[53,66]},{\"screen_name\":\"johnwalicki\",\"name\":\"John Walicki\",\"id\":2577403879,\"id_str\":\"2577403879\",\"indices\":[67,79]}],\"symbols\":[]},\"favorited\":false,\"retweeted\":false,\"filter_level\":\"low\",\"lang\":\"en\",\"timestamp_ms\":\"1557719891583\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "66017f05.4d9dc8"
+            ]
+        ]
+    },
+    {
+        "id": "91b409a1.b3e178",
+        "type": "sentiment",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "property": "payload",
+        "x": 400,
+        "y": 460,
+        "wires": [
+            [
+                "2828703c.beeee",
+                "ae77c3f.d2baac"
+            ]
+        ]
+    },
+    {
+        "id": "66017f05.4d9dc8",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "tweet",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "tweet.text",
+                "pt": "msg",
+                "to": "tweet.tweet.text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 280,
+        "wires": [
+            [
+                "207bc05e.155f8"
+            ]
+        ]
+    },
+    {
+        "id": "f9cbc3a0.599de8",
+        "type": "debug",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 870,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "207bc05e.155f8",
+        "type": "function",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "func": "if ( msg.payload === false ) {\n    return null;\n}\n\nif( typeof msg.tweet.text != 'undefined') {\n   return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 200,
+        "wires": [
+            [
+                "ca9257fb.843468"
+            ]
+        ]
+    },
+    {
+        "id": "a41b8eff.180f4",
+        "type": "debug",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "complete": "tweet",
+        "x": 300,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "5362f257.2adb6c",
+        "type": "function",
+        "z": "f0daf366.906ad",
+        "name": "Tweet URL",
+        "func": "msg.payload = \"<a href=\\\"https://twitter.com/\"+msg.tweet.user.screen_name+\"/status/\"+msg.tweet.id_str+\"\\\">Open Tweet</a>\";\nif( typeof msg.payload.retweeted_status != 'undefined') {\n    msg.payload = \"<a href=\\\"https://twitter.com/\"+msg.tweet.retweeted_status.user.screen_name+\"/status/\"+msg.tweet.retweeted_status.id_str+\"\\\">Open Tweet</a>\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 400,
+        "wires": [
+            [
+                "30e4e55d.1cd5c2",
+                "919abb24.d5adc8"
+            ]
+        ]
+    },
+    {
+        "id": "30e4e55d.1cd5c2",
+        "type": "debug",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 610,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "919abb24.d5adc8",
+        "type": "ui_template",
+        "z": "f0daf366.906ad",
+        "group": "cf79ae82.da0ad",
+        "name": "Open Tweet",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 610,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d0f23c1c.0c8ec",
+        "type": "ui_text",
+        "z": "f0daf366.906ad",
+        "group": "cf79ae82.da0ad",
+        "order": 2,
+        "width": "10",
+        "height": "3",
+        "name": "Tweet Text",
+        "label": "{{msg.store.sender}}",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 410,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "cbb60347.be9d18",
+        "type": "ui_gauge",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "group": "cf79ae82.da0ad",
+        "order": 4,
+        "width": "10",
+        "height": "8",
+        "gtype": "gage",
+        "title": "Sentiment",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "-10",
+        "max": 10,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 870,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "ae77c3f.d2baac",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "Sentiment Score",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "sentiment.score",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 440,
+        "wires": [
+            [
+                "cbb60347.be9d18",
+                "c3d5de45.838268"
+            ]
+        ]
+    },
+    {
+        "id": "a2156f31.f37ee8",
+        "type": "inject",
+        "z": "f0daf366.906ad",
+        "name": "Init Dashboard",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 140,
+        "y": 40,
+        "wires": [
+            [
+                "38df3c61.9e8bf4"
+            ]
+        ]
+    },
+    {
+        "id": "38df3c61.9e8bf4",
+        "type": "function",
+        "z": "f0daf366.906ad",
+        "name": "Inject /worldmap",
+        "func": "msg.payload = \"/worldmap\";\nmsg.payload.command = {};\n\nvar u = 'http://{s}.tile.openstreetmap.org/hot/{z}/{x}/{y}.png';\nvar o = JSON.stringify({ maxZoom: 19, attribution: '&copy; OpenStreetMap'});\n\nmsg.payload.command =   {\n                        layer:\"Esri\",\n                        lat:18.44081,\n                        lon:-66.08068,                        \n                        zoom:2,\n                        map: {name:\"Esri\", url:u, opt:o},\n                        };\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 40,
+        "wires": [
+            [
+                "6c5dfa21.af576c"
+            ]
+        ]
+    },
+    {
+        "id": "6c5dfa21.af576c",
+        "type": "template",
+        "z": "f0daf366.906ad",
+        "name": "Add Map to Dashboard",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<iframe src={{{payload}}} height=624px width=768px></iframe>",
+        "x": 610,
+        "y": 40,
+        "wires": [
+            [
+                "e2e70b19.c1856"
+            ]
+        ]
+    },
+    {
+        "id": "e2e70b19.c1856",
+        "type": "ui_template",
+        "z": "f0daf366.906ad",
+        "group": "15ba5b7f.482add",
+        "name": "Embedded Map",
+        "order": 0,
+        "width": "16",
+        "height": "13",
+        "format": "<div ng-bind-html=\"msg.payload | trusted\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 860,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c3d5de45.838268",
+        "type": "debug",
+        "z": "f0daf366.906ad",
+        "name": "Sentiment Score",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 890,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "9d880650.d3d7b",
+        "type": "ui_switch",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "label": "Enable / Disable",
+        "group": "cf79ae82.da0ad",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "207bc05e.155f8"
+            ]
+        ]
+    },
+    {
+        "id": "ca9257fb.843468",
+        "type": "switch",
+        "z": "f0daf366.906ad",
+        "name": "tweet.user.location ?",
+        "property": "tweet.user.location",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 200,
+        "wires": [
+            [
+                "ca91cbd1.4e05f8"
+            ]
+        ]
+    },
+    {
+        "id": "ca91cbd1.4e05f8",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "MapBox AccessToken",
+        "rules": [
+            {
+                "t": "set",
+                "p": "accesstoken",
+                "pt": "msg",
+                "to": "insert mapbox access token here",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 740,
+        "y": 200,
+        "wires": [
+            [
+                "1c6ce83a.25376",
+                "38a7059d.36f7d2"
+            ]
+        ]
+    },
+    {
+        "id": "1c6ce83a.25376",
+        "type": "http request",
+        "z": "f0daf366.906ad",
+        "name": "MapBox HTTP Request",
+        "method": "GET",
+        "ret": "txt",
+        "url": "https://api.mapbox.com/geocoding/v5/mapbox.places/{{{tweet.user.location}}}.json?access_token={{accesstoken}}&limit=1",
+        "tls": "",
+        "x": 990,
+        "y": 200,
+        "wires": [
+            [
+                "78614fe8.ddb978"
+            ]
+        ]
+    },
+    {
+        "id": "78614fe8.ddb978",
+        "type": "json",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1190,
+        "y": 200,
+        "wires": [
+            [
+                "80f0080d.ae9898"
+            ]
+        ]
+    },
+    {
+        "id": "80f0080d.ae9898",
+        "type": "change",
+        "z": "f0daf366.906ad",
+        "name": "Payload for sentiment",
+        "rules": [
+            {
+                "t": "set",
+                "p": "store.lat",
+                "pt": "msg",
+                "to": "payload.features[0].geometry.coordinates[1]",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.lon",
+                "pt": "msg",
+                "to": "payload.features[0].geometry.coordinates[0]",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.place",
+                "pt": "msg",
+                "to": "location.place",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.name",
+                "pt": "msg",
+                "to": "tweet.id_str",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "tweet.text",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.sender",
+                "pt": "msg",
+                "to": "tweet.user.screen_name",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.photoUrl",
+                "pt": "msg",
+                "to": "tweet.user.profile_image_url",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "store.command.zoom",
+                "pt": "msg",
+                "to": "2",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 160,
+        "y": 460,
+        "wires": [
+            [
+                "5362f257.2adb6c",
+                "91b409a1.b3e178",
+                "d0f23c1c.0c8ec"
+            ]
+        ]
+    },
+    {
+        "id": "15df0598.ee1af2",
+        "type": "comment",
+        "z": "f0daf366.906ad",
+        "name": "MapBox Forward GeoCode API",
+        "info": "",
+        "x": 510,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "38a7059d.36f7d2",
+        "type": "debug",
+        "z": "f0daf366.906ad",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 930,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "cf79ae82.da0ad",
+        "type": "ui_group",
+        "z": "",
+        "name": "Global Tweets",
+        "tab": "2353da31.44f89e",
+        "order": 1,
+        "disp": true,
+        "width": "10",
+        "collapse": false
+    },
+    {
+        "id": "15ba5b7f.482add",
+        "type": "ui_group",
+        "z": "",
+        "name": "Global Tweet Map",
+        "tab": "2353da31.44f89e",
+        "order": 2,
+        "disp": true,
+        "width": "16",
+        "collapse": false
+    },
+    {
+        "id": "2353da31.44f89e",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Tweet Map",
+        "icon": "dashboard",
+        "order": 4
+    }
+]
